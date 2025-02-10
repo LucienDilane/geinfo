@@ -26,16 +26,29 @@
     - Etudiant
         * Se connecter à son compte sur la plateforme
         * Modifier son mot de passe
-        * Modifier son profil sur la plate forme
+        * Modifier son profil sur la plateforme
         * Rechercher un étudiant sur la plateforme
-        * Echanger avec un autre étudiant par message
+        * Echanger avec un autre étudiant ou un enseignant par message
         * Envoyer des messages de groupe
+        * Modifier ou supprimer un message
         * Proposer des biens et des services
         * Partager des fichiers de tout type
+    
+    - Enseignant
+        a les  mêmes fonctionnalités que l'Etudiant
     
 ## Modèles
 
     * Etudiant
+        - matricule(unique)
+        - nom
+        - prenom
+        - adresse mail(unique)
+        - numero de téléphone(unique)
+        - année d'entrée
+        - année de sortie
+    
+    * Enseignant
         - matricule(unique)
         - nom
         - prenom
