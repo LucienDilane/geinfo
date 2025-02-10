@@ -8,7 +8,20 @@ class Etudiant(models.Model):
     filiere= models.CharField(max_length=3, verbose_name="Filiere")
     niveau= models.IntegerField(verbose_name="Niveau")
     inscrit= models.IntegerField(verbose_name="Annee d'entree")
+    statut= models.CharField(max_length=10, verbose_name="statut")
+    avatar= models.CharField(max_length=20,verbose_name="profil")
     password=models.CharField(max_length=20,verbose_name="mdp Etudiant")
+
+    def __str__(self):
+        return {
+                    "nom":self.nom,
+                    "prenom":self.prenom,
+                    "matricule":self.matricule,
+                    "filiere":self.filiere,
+                    "niveau":self.niveau,
+                    "avatar":self.avatar,
+                    "inscrit":self.inscrit
+                 }
     
       
     
