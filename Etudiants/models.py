@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Etudiant(models.Model):
-    matricule=models.CharField(verbose_name="Matricule",max_length=8, unique=True)
+    matricule=models.CharField(verbose_name="Matricule",max_length=9, unique=True)
     nom= models.CharField(max_length=30,verbose_name="Nom Etudiant")
     prenom= models.CharField(max_length=30,verbose_name="Prenom Etudiant")
     filiere= models.CharField(max_length=3, verbose_name="Filiere")

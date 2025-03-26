@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title %}Plateforme{% endblock  %}</title>
+</head>
+<body>
+
+	<header>
+		<nav>
+			{% block nav %}
+                <li> <a href="{% url 'accueil' %} ">Accueil</a> </li>
+                <li><a href="#">A propos</a></li>
+                <li><a href="#">Groupe</a></li>
+            {% endblock  %}
+		</nav>
+	</header>
+
+	<div>
+		{% block content %}
+		{% endblock content %}
+	</div>
+
+	<footer>&copy; 💥💥💥Le🔟💥💥💥</footer>
+
+</body>
+</html>
