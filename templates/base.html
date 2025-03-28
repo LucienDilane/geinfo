@@ -1,21 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% block title %}Plateforme{% endblock  %}</title>
+	<link rel="stylesheet" href="{% block rel %} {% endblock%}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
-
-	<header>
-		<nav>
-			{% block nav %}
-                <li> <a href="{% url 'accueil' %} ">Accueil</a> </li>
-                <li><a href="#">A propos</a></li>
-                <li><a href="#">Groupe</a></li>
-            {% endblock  %}
-		</nav>
-	</header>
+	<div class="container-fluid">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-info">
+            <a class="navbar-brand" href="#">GINFO</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'accueil' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'propos' %}">À propos</a>
+                    </li>
+                    </li>
+                </ul>
+            </div>
+    </nav>
+						{% block nav %}
+						{% endblock  %}
+					</nav>
+				</div>
+			</div>
 
 	<div>
 		{% block content %}
@@ -24,5 +41,9 @@
 
 	<footer>&copy; 💥💥💥Le🔟💥💥💥</footer>
 
+	</div>
+
+	<script src="{% static 'js/liens.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,3 +5,6 @@ from datetime import datetime
 
 def accueil(request):
     return render(request, 'geinfo/accueil.html',{'date':datetime.now()})
+
+def infos(request):
+    return render(request, 'geinfo/ginfo.html',{'welcome':"INFO"})
