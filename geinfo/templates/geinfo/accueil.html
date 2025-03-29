@@ -5,11 +5,41 @@
 
 {% block title %}Accueil{% endblock title %}
 {% block rel %}{% static 'geinfo/css/style.css' %}{% endblock rel %}
+
 {% block content %}
-	<form>
-		<input type="text" name="login" placeholder="Identifiant"><br>
-		<input type="password" name="pass" placeholder="Mot de passe" ><br>
-		<input type="submit" name="" value="Se Connecter">
-	</form>
+	<div class="col-md-4">
+		<p><img src="{% static 'geinfo/img/logo.jpg' %}"></p>
+		<form>
+            <!-- Champ Identifiant -->
+            <div class="mb-3">
+                <label for="identifiant" class="form-label">Identifiant</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input type="text" class="form-control-lg" id="identifiant" placeholder="Entrez votre identifiant">
+                </div>
+            </div>
+            <!-- Champ Mot de passe -->
+            <div class="mb-3">
+                <label for="motdepasse" class="form-label">Mot de passe</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" class="form-control-lg" id="motdepasse" placeholder="Entrez votre mot de passe">
+                </div>
+            </div>
+            <!-- Option Se souvenir de moi -->
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="souvenir">
+                <label class="form-check-label" for="souvenir">Se souvenir de moi</label>
+            </div>
+            <!-- Bouton de soumission -->
+            <button type="submit" class="btn btn-primary w-30">Se connecter</button>
+        </form>
+	</div>
+
+	<div class="col-md-8" id="accueil">
+		<h1 class="text-light">NOUVEAU OU ANCIEN, NOUS SOMMES UNE FAMILLE</h1>
+	</div>
 	
 {% endblock content %}
+{% block link%} {%url 'propos' %} {% endblock link %}
+{% block text %} A Propos {% endblock text %}
