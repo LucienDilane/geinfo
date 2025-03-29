@@ -16,10 +16,6 @@ class Migration(migrations.Migration):
             model_name='messagerecu',
             name='receiveEtudiantt',
         ),
-        migrations.RemoveField(
-            model_name='messagerecu',
-            name='receiveProf',
-        ),
         migrations.CreateModel(
             name='Message',
             fields=[

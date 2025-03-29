@@ -1,6 +1,6 @@
 .nav-link.active {
             font-weight: bold;
-            color: light !important;
+            color: yellow !important;
         }
 #main{
     margin-top: 5%;

@@ -8,7 +8,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('Echange', '0001_initial'),
-        ('Enseignant', '0001_initial'),
         ('Etudiants', '0001_initial'),
     ]
 
@@ -23,7 +22,6 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('corps', models.TextField(max_length='300', verbose_name='message')),
                 ('receiveEtudiantt', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='Etudiants.etudiant', verbose_name='reception Etudiant')),
-                ('receiveProf', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='Enseignant.enseignant', verbose_name='reception Enseignant')),
             ],
         ),
     ]
