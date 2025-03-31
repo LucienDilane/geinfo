@@ -5,3 +5,12 @@
 #main{
     margin-top: 5%;
 }
+.navbar-brand{
+    font-size: 60px;
+}
+footer{
+    width:100%;
+}
+nav{
+    width:100%;
+}

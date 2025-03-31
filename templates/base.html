@@ -27,9 +27,8 @@
 							<li class="nav-item">
 								<a class="nav-link" aria-current="page" href="{% url 'propos' %}">À propos</a>
 							</li>
-							</li>
 							{% block nav %}
-							{% endblock  %}
+							{% endblock nav  %}
 						</ul>
 
 
@@ -39,11 +38,8 @@
 			</div>
 		</div>
 
-
-	<div class="row" id="main">
 		{% block content %}
-		{% endblock content %}
-	</div>
+		{% endblock content %}	
 
 	<footer class="bg-dark text-white mt-5">
         <div class="container py-4">
