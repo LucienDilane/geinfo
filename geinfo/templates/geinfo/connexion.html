@@ -7,7 +7,7 @@
 {% block rel %}{% static 'geinfo/css/style.css' %}{% endblock rel %}
 
 {% block content %}
-<div class="row">
+<div class="row" id="content">
 
     <div class="col-md-4">
 		<p><img src="{% static 'geinfo/img/logo.jpg' %}"></p>
@@ -38,11 +38,12 @@
         </form>
 	</div>
 
-	<div class="col-md-8" id="accueil">
+	<div class="col-md-6" id="accueil">
 		<h1 class="text-light">NOUVEAU OU ANCIEN, NOUS SOMMES UNE FAMILLE</h1>
 	</div>
 
 </div>
+
 	
 {% endblock content %}
 {% block link%} {%url 'propos' %} {% endblock link %}

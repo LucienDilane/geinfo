@@ -1,0 +1,23 @@
+body{
+    background: url('../img/404.jpg');
+    background-size:cover;
+    background-repeat: no-repeat;
+    text-align: center;
+    padding-top: 100px
+}
+
+.floating{
+    font-size: 100px;
+    font-weight: bold;
+    color: #dc3545;
+    animation: float 3s ease-in-out infinite;
+}
+@keyframes float{
+    0%{transform: translateX(0px);}
+    50%{transform: translateX(-20px);}
+    100%{transform: translateX(0px);}
+}
+p{
+    font-weight: bold;
+    font-style: italic;
+}

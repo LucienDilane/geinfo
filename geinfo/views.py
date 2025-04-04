@@ -11,3 +11,6 @@ def infos(request):
 
 def accueil(request):
     return render(request,'geinfo/accueil.html',{"info":"INFO"})
+
+def error_404(request, exception):
+    return render(request,"geinfo/404.html",status=404)
