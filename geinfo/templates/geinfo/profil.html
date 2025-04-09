@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} mon profil {%endblock%}
+
+{% block nav %}
+    <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="#">Groupe <i class="bi bi-people"></i></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{% url 'profil' %}">Mon profil</a>
+    </li>
+
+    <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="#">Message<i class="bi bi-envelope"></i> </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="#">Rechercher<i class="bi bi-search"></i></a>
+    </li>
+
+{% endblock nav  %}
+
+{% block content %}
+    <h2>Mon Espace Personnel</h2>
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <h3>Mes infos</h3>
+            <aside>
+                <p><img src="{% static 'geinfo/img/user.jpg' %}" id="user"></p>
+                <p>Nom:Lucien</p>
+                <p>Pseudo: 💥💥💥Le🔟💥💥💥</p>
+                <P>Matricule: 24NIIB04A</P>
+                <p>Annee d'entree: 2024</p>
+            </aside>
+        </div>
+
+        <div class="col-md-3"></div>
+
+        <div class="col-md-4">
+            <h3>Mes groupes</h3>
+            <ul>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
+            </ul>
+        </div>
+
+    </div>
+{% endblock content %}

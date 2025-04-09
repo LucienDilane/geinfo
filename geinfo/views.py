@@ -14,3 +14,6 @@ def accueil(request):
 
 def error_404(request, exception):
     return render(request,"geinfo/404.html",status=404)
+
+def profil(request):
+    return render(request,"geinfo/profil.html",{"key":0})
