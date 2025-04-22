@@ -34,9 +34,6 @@
         * Proposer des biens et des services
         * Partager des fichiers de tout type
     
-    - Enseignant
-        a les  mêmes fonctionnalités que l'Etudiant
-    
 ## Modèles
 
     * Etudiant
@@ -47,15 +44,7 @@
         - numero de téléphone(unique)
         - année d'entrée
         - année de sortie
-    
-    * Enseignant
-        - matricule(unique)
-        - nom
-        - prenom
-        - adresse mail(unique)
-        - numero de téléphone(unique)
-        - année d'entrée
-        - année de sortie
+
 
     * Message
         - type(individuel/groupe)
@@ -68,8 +57,9 @@
     
 ## Applications
 
-    - Etudiant
-    - Echange
+    - Etudiant pour gerer les etudiants
+    - Echange pour gerer les messages envoyes dans la plateforme
+    - geinfo pour gerer les vues de la plateforme
 
 ## Technologies utiliées
 
