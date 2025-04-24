@@ -11,32 +11,50 @@
 
     <div class="col-md-4">
 		<p><img src="{% static 'geinfo/img/logo.jpg' %}"></p>
-		<form>
+
+		<form method="post" action="{% url 'login' %}">
+             {% csrf_token %}
+
+             {% if form.errors %}
+                <div class="error-container">
+                    <p class="error-message">Veuillez corriger les erreurs ci-dessous :</p>
+                    {{ form.non_field_errors }}
+                    {% for field in form %}
+                       <p style="color:red;">{{ field.errors }}</p>
+                    {% endfor %}
+                </div>
+             {% endif %}
+
             <!-- Champ Identifiant -->
             <div class="mb-3">
                 <label for="identifiant" class="form-label">Identifiant</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control-lg" id="identifiant" placeholder="Entrez votre identifiant">
+                    <input type="text" class="form-control-lg" id="identifiant" placeholder="Entrez votre identifiant" name="identifiant">
+                    {{ form.username.errors }} {# Afficher les erreurs spécifiques au champ identifiant #}
                 </div>
             </div>
+
             <!-- Champ Mot de passe -->
             <div class="mb-3">
                 <label for="motdepasse" class="form-label">Mot de passe</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input type="password" class="form-control-lg" id="motdepasse" placeholder="Entrez votre mot de passe">
+                    <input type="password" class="form-control-lg" id="motdepasse" placeholder="Entrez votre mot de passe"
+                           name="motdepasse" data-bs-toggle="password">{{ form.password.errors }}
                 </div>
             </div>
+
             <!-- Option Se souvenir de moi -->
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="souvenir">
-                <label class="form-check-label" for="souvenir">Se souvenir de moi</label>
+                <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                <label class="form-check-label" for="remember">Se souvenir de moi</label>
             </div>
             <!-- Bouton de soumission -->
-            <!--button type="submit" class="btn btn-primary w-30">Se connecter</button-->
+            <button type="submit" class="btn btn-primary w-30">Se connecter</button>
+            <p><a href="#">Mot de passe oublié ?</a></p>
         </form>
-        <a href="{% url 'profil' %}"> <button class="btn btn-primary w-30">Se connecter</button></a>
+
 	</div>
 
 	<div class="col-md-6" id="accueil">

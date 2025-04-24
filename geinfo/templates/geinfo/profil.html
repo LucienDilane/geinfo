@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+
 {% load static %}
+
 {% block title %} mon profil {%endblock%}
+
+{% block rel %}{% static 'geinfo/css/profil.css' %}{% endblock rel %}
 
 {% block nav %}
     <li class="nav-item">
@@ -22,33 +26,119 @@
 {% endblock nav  %}
 
 {% block content %}
-    <h2>Mon Espace Personnel</h2>
+    <h2 class="text-center">Mon Espace Personnel</h2>
     <div class="row">
 
-        <div class="col-md-4">
+        <div class="col-md-3">
 
-            <h3>Mes infos</h3>
+            <h3 class="text-center">Mes infos</h3>
             <aside>
-                <p><img src="{% static 'geinfo/img/user.jpg' %}" id="user"></p>
+                <p><img src="{% static 'geinfo/img/user.jpg' %}" id="user" class="rounded-circle w-50 h-25"></p>
                 <p>Nom:Lucien</p>
                 <p>Pseudo: 💥💥💥Le🔟💥💥💥</p>
                 <P>Matricule: 24NIIB04A</P>
                 <p>Annee d'entree: 2024</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifierInfos">
+                    Modifier mes informations</button>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modifierMdp">
+                        Modifier mon mot de passe</button>
+                
             </aside>
+            {% comment "" %}Formulaire de modification{% endcomment %}
+            <div class="modal fade" id="modifierInfos" tabindex="-1" aria-labelledby="modifierInfosLabels" aria-hidden="true">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center" id="modifInfosLabels">Formulaire de modification</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" title="Fermer"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form  action="{% url 'profil' %}" enctype="multipart/form-data">
+
+                                 <div class="mb-3">
+                                     <label for="nom" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="nom" value="Lucien">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="pseudo" class="form-label">Pseudo</label>
+                                    <input type="text" class="form-control" id="pseudo" value="💥💥💥Le🔟💥💥💥">
+                                </div>
+
+                                 <div class="mb-3">
+                                     <label for="profil" class="form-label">Profil</label>
+                                 <input type="file" class="form-control" id="profil">
+                                </div>
+
+                                <button type="submit" class="btn btn-success">Enregistrer</button>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            {% comment %}Formulaire de modification du mot de passse{% endcomment %}
+            <div class="modal fade" id="modifierMdp" tabindex="-1" aria-labelledby="modifierInfosLabels" aria-hidden="true">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center" id="modifPass">Changer le mot de passe</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" title="Fermer"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form  action="{% url 'profil' %}">
+
+                                 <div class=" input-group mb-3">
+                                    <input type="password" class="form-control bi bi-eye" id="password" placeholder="Entrez le mot de passe actuel"
+                                    data-bs-toggle="password">
+                                </div>
+
+                                <div class=" input-group mb-3">
+                                    <input type="password" class="form-control" id="mdp" placeholder="Entrez le nouveau de passe" data-bs-toggle="password">
+                                </div>
+
+                                 
+
+                                <button type="submit" class="btn btn-success" id="valid">Modifier</button>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
 
-        <div class="col-md-3"></div>
+
+
+        
 
         <div class="col-md-4">
-            <h3>Mes groupes</h3>
-            <ul>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="group">Groupe 1</li>
+            <h3 class="text-center">Mes groupes</h3>
+            <ul class="list-unstyled">
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25" >Groupe 1</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 2</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 3</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 4</li>
+                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 5</li>
             </ul>
         </div>
 
     </div>
+
+
 {% endblock content %}
+{% block script %} {% static 'geinfo/js/changePass.js' %} {% endblock script %}

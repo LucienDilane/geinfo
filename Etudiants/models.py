@@ -1,27 +1,50 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser,BaseUserManager,PermissionsMixin
 
-# Create your models here.
-class Etudiant(models.Model):
-    matricule=models.CharField(verbose_name="Matricule",max_length=9, unique=True)
-    nom= models.CharField(max_length=30,verbose_name="Nom Etudiant")
-    prenom= models.CharField(max_length=30,verbose_name="Prenom Etudiant")
-    filiere= models.CharField(max_length=3, verbose_name="Filiere")
-    niveau= models.IntegerField(verbose_name="Niveau")
-    inscrit= models.IntegerField(verbose_name="Annee d'entree")
-    statut= models.CharField(max_length=10, verbose_name="statut")
-    avatar= models.CharField(max_length=20,verbose_name="profil")
-    password=models.CharField(max_length=20,verbose_name="mdp Etudiant")
+
+#Gestionnaire de Models
+class EtudiantManager(BaseUserManager):
+    def create_user(self,matricule,password=None):
+        if not matricule:
+            raise ValueError("Le matricule est requis")
+
+
+        if not password:
+            raise ValueError("Le mot de passe est requis")
+
+        user=self.model(
+            matricule=matricule,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self,matricule,password=None):
+        user=self.create_user(
+            matricule=matricule,
+            password=password,
+        )
+        user.is_admin=True
+        user.is_staff=True
+        user.is_superuser=True
+        user.save(using=self._db)
+        return user
+
+class Etudiant(AbstractBaseUser,PermissionsMixin):
+    matricule=models.CharField(max_length=10,unique=True,verbose_name="identifiant")
+    nom=models.CharField(max_length=255,verbose_name="nom")
+    prenom=models.CharField(max_length=255,verbose_name="prenom")
+    password = models.CharField(max_length=10,verbose_name="mot de passe")
+    inscription=models.CharField(max_length=4,verbose_name="annee d'inscription",default=0)
+    profil=models.CharField(max_length=255,verbose_name="profil")
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    is_staff= models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    objects=EtudiantManager()
+    USERNAME_FIELD="matricule"
+    REQUIRED_FIELDS = ["password"]
 
     def __str__(self):
-        return {
-                    "nom":self.nom,
-                    "prenom":self.prenom,
-                    "matricule":self.matricule,
-                    "filiere":self.filiere,
-                    "niveau":self.niveau,
-                    "avatar":self.avatar,
-                    "inscrit":self.inscrit
-                 }
-    
-      
-    
+        return self.matricule

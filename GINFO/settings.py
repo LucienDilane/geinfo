@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v)*ct#!&4#bf7@km*89(9uk6r7#tg%$rpi9!+)2x#&y=$cmqye'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1","localhost"]
 
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'GINFO.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'ginfo.sqlite3',
+        'NAME': BASE_DIR / 'geinfo.sqlite3',
     }
 }
 
@@ -104,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+LOGIN_REDIRECT_URL='administration'
 
 
 # Internationalization
@@ -129,3 +130,8 @@ STATICFILES_DIRS=[BASE_DIR,'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'Etudiants.Etudiant'
+
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+MEDIA_URL='media/'
+SESSION_ENGINE='django.contrib.sessions.backends.db'
