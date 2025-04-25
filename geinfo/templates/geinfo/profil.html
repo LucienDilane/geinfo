@@ -26,24 +26,91 @@
 {% endblock nav  %}
 
 {% block content %}
-    <h2 class="text-center">Mon Espace Personnel</h2>
-    <div class="row">
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Mon Espace</h2>
 
-        <div class="col-md-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">Mes informations</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if user.profil %}
+                        <img src="{% static 'geinfo/img/profils' }}{{ user.profil }}" alt="Photo de profil" class="img-thumbnail rounded-circle mb-3" width="150" height="150" style="object-fit: cover;">
 
-            <h3 class="text-center">Mes infos</h3>
-            <aside>
-                <p><img src="{% static 'geinfo/img/user.jpg' %}" id="user" class="rounded-circle w-50 h-25"></p>
-                <p>Nom:Lucien</p>
-                <p>Pseudo: 💥💥💥Le🔟💥💥💥</p>
-                <P>Matricule: 24NIIB04A</P>
-                <p>Annee d'entree: 2024</p>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifierInfos">
-                    Modifier mes informations</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modifierMdp">
-                        Modifier mon mot de passe</button>
-                
-            </aside>
+                    {% else %}
+                        <i class="fas fa-user-circle fa-5x text-secondary mb-3"></i>
+                        <p class="text-muted">Aucune photo de profil définie.</p>
+                    {% endif %}
+
+                    <h5 class="mb-2">{{ user.nom }} {{ user.prenom }}</h5>
+                    <p class="text-muted mb-1">{{ user.matricule }}</p>
+                    <p class="text-muted mb-3">{{ user.niveau }} - {{ user.filiere }}</p>
+                </div>
+                <hr class="my-0">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Année d'inscription</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ user.annee }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Dernière connexion</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {% if user.last_login %}
+                                {{ user.last_login|date:"d M Y H:i:s" }}
+                            {% else %}
+                                Jamais
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="mt-3">Actions</h5>
+                    <div class="d-flex justify-content-end mt-3">
+                       <button type="button" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modifierMdp">Modifier le mot de passe</button>
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modifierInfos">Modifier la photo de profil</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white py-3">
+                    <h4 class="mb-0">Groupes</h4>
+                </div>
+                <div class="card-body">
+                    {% if user.groups.all %}
+                        <ul class="list-group list-group-flush">
+                            {% for group in user.groups.all %}
+                                <li class="list-group-item">{{ group.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">Vous n'appartenez à aucun groupe pour le moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h4 class="mb-0">Déconnexion</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">Prêt à quitter votre espace utilisateur ?</p>
+                    <a href="{% url 'logout' %}" class="btn btn-warning mt-2">Se déconnecter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
             {% comment "" %}Formulaire de modification{% endcomment %}
             <div class="modal fade" id="modifierInfos" tabindex="-1" aria-labelledby="modifierInfosLabels" aria-hidden="true">
 
@@ -52,29 +119,23 @@
                     <div class="modal-content">
 
                         <div class="modal-header">
-                            <h5 class="modal-title text-center" id="modifInfosLabels">Formulaire de modification</h5>
+                            <h5 class="modal-title text-center" id="modifInfosLabels">Changer la photo de profil</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" title="Fermer"></button>
                         </div>
 
                         <div class="modal-body">
-                            <form  action="{% url 'profil' %}" enctype="multipart/form-data">
+                            <form  method="post" action="{% url 'changerphoto' %}" enctype="multipart/form-data">
+                                 {% csrf_token %}
 
                                  <div class="mb-3">
-                                     <label for="nom" class="form-label">Nom</label>
-                                    <input type="text" class="form-control" id="nom" value="Lucien">
+                                     <label for="profile" class="form-label">Profil</label>
+                                     <input type="file" class="form-control" id="profile" name="profile" accept="image/*">
+                                     <small class="form-text text-muted">Formats acceptés : JPG, PNG.</small>
+
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="pseudo" class="form-label">Pseudo</label>
-                                    <input type="text" class="form-control" id="pseudo" value="💥💥💥Le🔟💥💥💥">
-                                </div>
-
-                                 <div class="mb-3">
-                                     <label for="profil" class="form-label">Profil</label>
-                                 <input type="file" class="form-control" id="profil">
-                                </div>
-
-                                <button type="submit" class="btn btn-success">Enregistrer</button>
+                                <button type="submit" class="btn btn-success">Modifier</button>
+                                <a href="{% url 'profil' %}" class="btn btn-secondary mt-2">Annuler</a>
 
                             </form>
                         </div>
@@ -109,6 +170,10 @@
                                     <input type="password" class="form-control" id="mdp" placeholder="Entrez le nouveau de passe" data-bs-toggle="password">
                                 </div>
 
+                                <div class=" input-group mb-3">
+                                    <input type="password" class="form-control" id="cmdp" placeholder="Confirmer le nouveau de passe" data-bs-toggle="password">
+                                </div>
+
                                  
 
                                 <button type="submit" class="btn btn-success" id="valid">Modifier</button>
@@ -123,21 +188,6 @@
         </div>
 
 
-
-        
-
-        <div class="col-md-4">
-            <h3 class="text-center">Mes groupes</h3>
-            <ul class="list-unstyled">
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25" >Groupe 1</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 2</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 3</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 4</li>
-                <li><img src="{% static 'geinfo/img/group.jpg' %}" class="rounded-circle w-25 h-25">Groupe 5</li>
-            </ul>
-        </div>
-
-    </div>
 
 
 {% endblock content %}

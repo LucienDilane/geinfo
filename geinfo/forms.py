@@ -21,3 +21,11 @@ class LoginForm(forms.Form):
             else:
                 raise forms.ValidationError("Identifiant ou mot de passe incorrect.")
         return self.cleaned_data
+
+class ModifierPhotoProfilForm(forms.Form):
+    photo_profil = forms.ImageField(
+        label='profile',
+        required=False  # La photo n'est pas obligatoire
+    )
+    def clean(self):
+        photo_profil=self.cleaned_data.get('profile')
