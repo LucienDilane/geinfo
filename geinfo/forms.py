@@ -23,9 +23,8 @@ class LoginForm(forms.Form):
         return self.cleaned_data
 
 class ModifierPhotoProfilForm(forms.Form):
-    photo_profil = forms.ImageField(
-        label='profile',
+    photo = forms.ImageField(
+        label='profiletof',
         required=False  # La photo n'est pas obligatoire
     )
-    def clean(self):
-        photo_profil=self.cleaned_data.get('profile')
+

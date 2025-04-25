@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
@@ -106,41 +106,33 @@ def enregistrement_etudiant(request):
 
 
 def modifier_photo_profil(request):
+    etudiant = get_object_or_404(Etudiant,matricule=request.user.matricule)  # Utilisez matricule pour identifier l'étudiant
+
     if request.method == 'POST':
         form = ModifierPhotoProfilForm(request.POST, request.FILES)
         if form.is_valid():
-            photo = form.cleaned_data["profile"]
-            etudiant = request.user
+            profile_picture = form.cleaned_data['photo']
+            if profile_picture:
+                chemin_destination = os.path.join(settings.BASE_DIR, 'geinfo', 'static', 'geinfo', 'img', 'profils')
+                nom_fichier = f"{etudiant.matricule}_{profile_picture.name}"  # Utilisez le matricule pour le nom du fichier
+                chemin_fichier_destination = os.path.join(chemin_destination, nom_fichier)
 
-            if photo:
-                # Générer un nom de fichier unique pour éviter les collisions
-                nom_fichier, extension = os.path.splitext(photo.name)
-                nom_fichier_unique = f'{etudiant.matricule}_{uuid.uuid4().hex}{extension}'
+                os.makedirs(chemin_destination, exist_ok=True)
 
-                # Construire le chemin de destination dans le dossier static
-                chemin_destination_static = os.path.join(settings.BASE_DIR, 'geinfo', 'static', 'geinfo', 'img',
-                                                         'profils', nom_fichier_unique)
+                try:
+                    with open(chemin_fichier_destination, 'wb+') as destination:
+                        for chunk in profile_picture.chunks():
+                            destination.write(chunk)
 
-                # S'assurer que le dossier de destination existe
-                os.makedirs(os.path.join(settings.BASE_DIR, 'geinfo', 'static', 'geinfo', 'img', 'profils'),
-                            exist_ok=True)
+                    etudiant.profil = nom_fichier  # Enregistrez le nom du fichier dans le champ 'profil'
+                    etudiant.save()
+                    return redirect('profil')  # Remplacez par le nom de votre vue de profil
 
-                # Écrire le fichier sur le disque
-                with open(chemin_destination_static, 'wb+') as destination:
-                    for chunk in photo.chunks():
-                        destination.write(chunk)
+                except Exception as e:
+                    form.add_error('profile_picture',f"Une erreur est survenue lors de l'enregistrement de l'image : {e}")
 
-                # Enregistrer uniquement le nom du fichier dans la base de données
-                etudiant.profil = nom_fichier_unique
-                etudiant.save()
-                return redirect('profil')  # Rediriger vers l'espace utilisateur après succès
-            else:
-                # Si aucun fichier n'a été choisi, ne rien faire et rediriger
-                return redirect('profil')
-        else:
-            # Si le formulaire n'est pas valide, afficher les erreurs
-            return render(request, 'geinfo/profil.html', {'form': form})
+        return render(request, 'geinfo/profil.html', {'form': form})
+
     else:
-        # Si la requête est GET, afficher le formulaire vide
         form = ModifierPhotoProfilForm()
         return render(request, 'geinfo/profil.html', {'form': form})

@@ -37,7 +37,7 @@
                 </div>
                 <div class="card-body text-center">
                     {% if user.profil %}
-                        <img src="{% static 'geinfo/img/profils' }}{{ user.profil }}" alt="Photo de profil" class="img-thumbnail rounded-circle mb-3" width="150" height="150" style="object-fit: cover;">
+                        <img src="{% static 'geinfo/img/profils/' %}{{ user.profil }}" alt="Photo de profil" class="rounded-circle mb-10" width="150" height="150" style="object-fit: cover;">
 
                     {% else %}
                         <i class="fas fa-user-circle fa-5x text-secondary mb-3"></i>
@@ -103,7 +103,7 @@
                 </div>
                 <div class="card-body">
                     <p class="mb-0">Prêt à quitter votre espace utilisateur ?</p>
-                    <a href="{% url 'logout' %}" class="btn btn-warning mt-2">Se déconnecter</a>
+                    <a href="{% url 'logout' %}" class="btn btn-danger mt-2">Se déconnecter</a>
                 </div>
             </div>
         </div>
@@ -128,8 +128,8 @@
                                  {% csrf_token %}
 
                                  <div class="mb-3">
-                                     <label for="profile" class="form-label">Profil</label>
-                                     <input type="file" class="form-control" id="profile" name="profile" accept="image/*">
+                                     <label for="profiletof" class="form-label">Profil</label>
+                                     <input type="file" class="form-control" name="photo" id="profiletof" accept="image/*">
                                      <small class="form-text text-muted">Formats acceptés : JPG, PNG.</small>
 
                                 </div>
