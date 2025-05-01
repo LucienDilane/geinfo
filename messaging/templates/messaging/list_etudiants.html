@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h2>Liste des Contacts</h2>
+    {% if contacts %}
+      <ul class="list-group">
+        {% for contact in contacts %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+             {{ contact.nom }}
+            <a href="#" class="btn btn-primary btn-sm">Discuter</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Aucun contact disponible.</p>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Etudiants',
-    'Echange',
-    'Groupe',
     'geinfo',
+    'channels',
+    'messaging'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +135,4 @@ AUTH_USER_MODEL = 'Etudiants.Etudiant'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 MEDIA_URL='media/'
 SESSION_ENGINE='django.contrib.sessions.backends.db'
+ASGI_APPLICATION = "GINFO.asgi.application"  # Remplace 'ton_projet' par le nom de ton projet Django

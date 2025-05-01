@@ -1,14 +1,90 @@
-{% extends "base.html" %}
-{% load static%}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Blur</title>
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: #f4f4f4;
+        }
+        .hero {
+            """background-image: url("{% static 'geinfo/img/logo.jpg'%}");"""
+            background-repeat: no-repeat;
+            background-position: center;
+            background:aqua;
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        .premium-banner {
+            background-color: #f8c74d;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .category-card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
 
-{% block title%}accueil{% endblock title%}
-{% block nav %}
+<header class="hero">
+    <h1>GINFO</h1>
+    <p>Plateforme d'échange entre anciens et nouveaux etudiants</p>
+    <div>
+        <a class="btn btn-warning" href="{% url 'connexion' %}"><i class="fas fa-sign-in-alt"> Connexion</i></a> <!-- Bouton de connexion avec icône -->
+    </div>
+</header>
 
-<li class="nav-item">
-    <a class="nav-link" aria-current="page" href="{% url 'connexion' %}">connexion</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" aria-current="page" href="#"></a>
-</li>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="category-card card">
+                <h5 class="card-title bg-primary">GINFO - Nouvelles</h5>
+                <div class="card-body">
+                    <p class="card-text">Les dernières nouvelles et informations sur le forum.</p>
+                    <a href="{% url 'propos' %}" class="btn btn-primary">Voir</a>
+                </div>
+            </div>
+            <h2>Discussions</h2>
 
-{% endblock nav %}
+            <div class="category-card card">
+                <h5 class="card-title bg-primary">Discussion Générale</h5>
+                <div class="card-body">
+                    <p class="card-text">Discussion sur GINFO. Traite de tous les sujets avec tout le monde.</p>
+                    <a href="#" class="btn btn-primary">Voir</a>
+                </div>
+            </div>
+            <div class="category-card card">
+                <h5 class="card-title bg-primary">Mode Solo</h5>
+                <div class="card-body">
+                    <p class="card-text">Discussion sur le mode solo de Blur.</p>
+                    <a href="#" class="btn btn-primary">Voir</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="premium-banner">
+                <h5>PREMIUM</h5>
+                <p>Devenez membre Premium du forum et profitez d'incroyables avantages !</p>
+                <p><strong>3,99€ / mois</strong></p>
+                <a href="#" class="btn btn-dark">Devenir Premium</a>
+            </div>
+            <div class="mt-4">
+                <h5>Qui est en ligne ?</h5>
+                <p>2 invités</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

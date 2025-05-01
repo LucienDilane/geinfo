@@ -16,7 +16,7 @@
     </li>
 
     <li class="nav-item">
-    <a class="nav-link" aria-current="page" href="#">Message<i class="bi bi-envelope"></i> </a>
+    <a class="nav-link" aria-current="page" href="{% url 'etudiants' %}">Message<i class="bi bi-envelope"></i> </a>
     </li>
 
     <li class="nav-item">
@@ -159,19 +159,21 @@
                         </div>
 
                         <div class="modal-body">
-                            <form  action="{% url 'profil' %}">
+                            <form  method="post" action="{% url 'changepassword' %}">
+                                {% csrf_token %}
 
                                  <div class=" input-group mb-3">
                                     <input type="password" class="form-control bi bi-eye" id="password" placeholder="Entrez le mot de passe actuel"
-                                    data-bs-toggle="password">
+                                    name="old_password" data-bs-toggle="password">
                                 </div>
 
                                 <div class=" input-group mb-3">
-                                    <input type="password" class="form-control" id="mdp" placeholder="Entrez le nouveau de passe" data-bs-toggle="password">
+                                    <input type="password" class="form-control" id="mdp"
+                                           name="new_password1" placeholder="Entrez le nouveau de passe" data-bs-toggle="password">
                                 </div>
 
                                 <div class=" input-group mb-3">
-                                    <input type="password" class="form-control" id="cmdp" placeholder="Confirmer le nouveau de passe" data-bs-toggle="password">
+                                    <input type="password" class="form-control" id="cmdp" name="new_password2" placeholder="Confirmer le nouveau de passe" data-bs-toggle="password">
                                 </div>
 
                                  

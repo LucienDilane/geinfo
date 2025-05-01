@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
+from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.conf import settings
@@ -9,7 +9,7 @@ import os
 import uuid  # Pour générer des noms de fichiers uniques
 from datetime import timedelta
 from Etudiants.models import Etudiant
-from .forms import LoginForm,ModifierPhotoProfilForm
+from .forms import LoginForm,ModifierPhotoProfilForm,ChangerMotDePasseForm
 
 
 # Create your views here.
@@ -136,3 +136,17 @@ def modifier_photo_profil(request):
     else:
         form = ModifierPhotoProfilForm()
         return render(request, 'geinfo/profil.html', {'form': form})
+
+def changer_mot_de_passe(request):
+    if request.method == 'POST':
+        form = ChangerMotDePasseForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Votre mot de passe a été changé avec succès !')
+            return redirect('profil')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = ChangerMotDePasseForm(request.user)
+    return render(request, 'geinfo/profil.html', {'form': form})

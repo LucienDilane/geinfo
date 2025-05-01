@@ -24,5 +24,6 @@ handler404="geinfo.views.error_404"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('geinfo/',include('geinfo.urls'))
+    path('geinfo/',include('geinfo.urls')),
+    path('messaging/',include('messaging.urls')),
 ]
