@@ -58,7 +58,7 @@
 ## Applications
 
     - Etudiant pour gerer les etudiants
-    - Echange pour gerer les messages envoyes dans la plateforme
+    - messaging pour gerer les messages envoyes dans la plateforme
     - geinfo pour gerer les vues de la plateforme
 
 ## Technologies utiliées
@@ -70,13 +70,14 @@
 
     []framework bootstrap
 
-    [] SGBD: sqlite, bd: ginfo
+    [] SGBD: sqlite, bd: geinfo
 
 
 ## Installation
     * Bibliothèques à installer sur python
         - Django
         - channels
+        - daphne pour la connexion des websockets
 
 ## Liens utiles
 

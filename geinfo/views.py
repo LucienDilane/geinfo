@@ -57,10 +57,14 @@ def profil(request):
 
 
 
-def admin(request):
+def register(request):
     # Le code de vue protégée ici
-    return render(request,'geinfo/admin.html',{"yes":"yep"})
+    return render(request,'geinfo/enregistrer.html',{"yes":"yep"})
 
+@login_required
+def admin(request):
+    etudiants=Etudiant.objects.all()
+    return render(request,"geinfo/admin.html", {"etudiants":etudiants})
 
 def enregistrement_etudiant(request):
     if request.method == 'POST':
@@ -75,13 +79,13 @@ def enregistrement_etudiant(request):
         # Effectuer des validations supplémentaires ici si nécessaire
         if not matricule or not nom or not prenom or not annee_entree or not niveau or not filiere or not mot_de_passe_clair:
             messages.error(request, 'Tous les champs sont obligatoires.')
-            return render(request, 'geinfo/admin.html')
+            return render(request, 'geinfo/enregistrer.html')
 
         try:
             annee_entree = int(annee_entree)
         except ValueError:
             messages.error(request, "L'année d'entrée doit être un nombre.")
-            return render(request, 'geinfo/admin.html') # Assure-toi que le chemin est correct
+            return render(request, 'geinfo/enregistrer.html') # Assure-toi que le chemin est correct
 
         # Hasher le mot de passe avant de l'enregistrer
         mot_de_passe_hash = make_password(mot_de_passe_clair)
@@ -99,10 +103,10 @@ def enregistrement_etudiant(request):
         etudiant.save()
 
         messages.success(request, 'Étudiant enregistré avec succès !')
-        return redirect('accueil') # Assure-toi que l'URL est correctement nommée dans ton urls.py
+        return redirect('admin') # Assure-toi que l'URL est correctement nommée dans ton urls.py
     else:
         # Si la requête n'est pas POST, afficher le formulaire HTML
-        return render(request, 'geinfo/admin.html')
+        return render(request, 'geinfo/enregistrer.html')
 
 
 def modifier_photo_profil(request):
@@ -150,3 +154,12 @@ def changer_mot_de_passe(request):
     else:
         form = ChangerMotDePasseForm(request.user)
     return render(request, 'geinfo/profil.html', {'form': form})
+
+def delete(request,id):
+    etudiant=get_object_or_404(Etudiant,id=id)
+    etudiant.delete()
+    return redirect("admin")
+
+def modifier_etudiant(request,id):
+    etudiant=get_object_or_404(Etudiant,id=id)
+    return render(request,"geinfo/modifier.html",{"etudiant":etudiant})

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-header">
+        Conversation avec {{ receiver.nom }}
+      </div>
+      <div class="card-body" id="message-container" style="height: 400px; overflow-y: auto;">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="{% if message.sender == request.user %}text-right{% else %}text-left{% endif %} mb-2">
+              <div class="bg-light p-2 rounded">
+                <strong>{{ message.sender.nom }}:</strong> {{ message.content }}
+                <small class="text-muted">{{ message.timestamp|date:"d M Y, H:i" }}</small>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-center">Aucun message dans cette conversation.</p>
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <form id="message-form">
+          {% csrf_token %}
+          <div class="input-group">
+            <input type="text" id="message-input" class="form-control" placeholder="Écrire un message...">
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-primary">Envoyer</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Ici, nous ajouterons le code JavaScript pour la gestion des WebSockets
+    const messageContainer = document.getElementById('message-container');
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+    const receiverId = "{{ receiver.id }}";
+    const userId = "{{ request.user.id }}";
+
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    // Remplace 8001 par le port sur lequel Daphne est réellement en train d'écouter.
+    const websocketUrl = `${protocol}://${window.location.hostname}:8000/ws/chat/${receiverId}/`;
+    const chatSocket = new WebSocket(websocketUrl);
+
+    chatSocket.onopen = function(e) {
+      console.log('Connexion WebSocket établie.');
+    };
+
+    chatSocket.onclose = function(e) {
+      console.error('Connexion WebSocket fermée de manière inattendue.');
+    };
+
+    chatSocket.onmessage = function(e) {
+      const data = JSON.parse(e.data);
+      addMessage(data);
+    };
+
+    function addMessage(data) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('mb-2');
+      if (data.sender_id == userId) {
+        messageDiv.classList.add('text-right');
+        messageDiv.innerHTML = `
+          <div class="bg-light p-2 rounded">
+            <strong>{{ request.user.username }}:</strong> ${data.message}
+            <small class="text-muted">${new Date(data.timestamp).toLocaleTimeString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</small>
+          </div>
+        `;
+      } else {
+        messageDiv.classList.add('text-left');
+        messageDiv.innerHTML = `
+          <div class="bg-light p-2 rounded">
+            <strong>{{ receiver.username }}:</strong> ${data.message}
+            <small class="text-muted">${new Date(data.timestamp).toLocaleTimeString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</small>
+          </div>
+        `;
+      }
+      messageContainer.appendChild(messageDiv);
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+
+    messageForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const message = messageInput.value.trim();
+      if (message) {
+        chatSocket.send(JSON.stringify({
+          'message': message,
+          'receiver_id': receiverId,
+        }));
+        messageInput.value = '';
+      }
+    });
+
+    // Faire défiler vers le bas lors du chargement initial des messages
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+  </script>
+{% endblock %}

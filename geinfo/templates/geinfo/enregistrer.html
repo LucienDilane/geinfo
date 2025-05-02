@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - GINFO admin</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+
+        <header class="bg-primary text-white py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-9">
+                    <h1>GINFO admin</h1>
+                </div>
+                <div class="col-md-3 text-right">
+                    <a href="{% url 'admin' %}" class="btn btn-light">Interface d'admin</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Inscription
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="matricule">Matricule</label>
+                                <input type="text" class="form-control" id="matricule" name="matricule" placeholder="Entrez le matricule de l'etudiant">
+                            </div>
+                            <div class="form-group">
+                                <label for="nom">Nom</label>
+                                <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom d'etudiant">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="prenom">Prénom</label>
+                                <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Entrez le prénom d'etudiant">
+                            </div>
+
+                               <div class="form-group">
+                                <span class="form-icon"><i class="fas fa-graduation-cap"></i></span>
+                                <select class="form-control" id="filiere" name="filiere">
+                                    <option value="" disabled selected>Sélectionnez la filiere</option>
+                                    <option value="II">II</option>
+                                    <option value="TIC">TIC</option>
+                                </select>
+                                <label for="niveau" class="form-label-floating">Niveau</label>
+                            </div>
+
+                             <div class="form-group">
+                                <span class="form-icon"><i class="fas fa-graduation-cap"></i></span>
+                                <select class="form-control" id="niveau" name="niveau">
+                                    <option value="" disabled selected>Sélectionnez le niveau</option>
+                                    <option value="L1">Licence 1</option>
+                                    <option value="L2">Licence 2</option>
+                                    <option value="L3">Licence 3</option>
+                                    <option value="M1">Master 1</option>
+                                    <option value="M2">Master 2</option>
+                                </select>
+                                <label for="niveau" class="form-label-floating">Filiere</label>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="annee">Annee d'inscription</label>
+                                <input type="number" class="form-control" id="annee" name="annee" placeholder="annee d'inscription">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Mot de passe</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Entrez votre mot de passe">
+                            </div>
+
+
+                            <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    </div>
+</body>
+</html>

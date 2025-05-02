@@ -8,7 +8,7 @@
         {% for contact in contacts %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
              {{ contact.nom }}
-            <a href="#" class="btn btn-primary btn-sm">Discuter</a>
+            <a href="{% url 'chat_view' contact.id %}" class="btn btn-primary btn-sm">Discuter</a>
           </li>
         {% endfor %}
       </ul>
