@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'Etudiants',
     'geinfo',
     'channels',
-    'messaging'
+    'messaging',
+    'adminginfo',
 ]
 
 MIDDLEWARE = [

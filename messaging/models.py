@@ -4,7 +4,7 @@ from Etudiants.models import Etudiant
 # Create your models here.
 
 
-class Echange(models.Model):
+class Message(models.Model):
     sender = models.ForeignKey(Etudiant, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(Etudiant, on_delete=models.CASCADE, related_name='received_messages')
     content = models.TextField()

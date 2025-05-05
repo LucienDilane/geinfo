@@ -9,7 +9,7 @@ import os
 import uuid  # Pour générer des noms de fichiers uniques
 from datetime import timedelta
 from Etudiants.models import Etudiant
-from .forms import LoginForm,ModifierPhotoProfilForm,ChangerMotDePasseForm
+
 
 
 # Create your views here.
@@ -17,24 +17,7 @@ def accueil(request):
     return render(request,'geinfo/accueil.html',{"info":"INFO"})
 
 def connexion(request):
-    return render(request,'geinfo/connexion.html',{"con":"yes"})
-def connexion_user(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = form.cleaned_data['user']
-            login(request, user)
-            if request.POST.get('remember_me'):
-                # Définir une durée de vie de session plus longue (par exemple, 2 semaines)
-                request.session.set_expiry(timedelta(weeks=2))
-            else:
-                # Définir une durée de vie de session par défaut (fermeture du navigateur)
-                request.session.set_expiry(0)
-            # Rediriger l'utilisateur après la connexion
-            return redirect('profil')
-    else:
-        form = LoginForm()
-    return render(request, 'geinfo/connexion.html', {'form': form})
+    return render(request,'Etudiants/connexion.html',{"con":"yes"})
 
 def infos(request):
     return render(request, 'geinfo/ginfo.html',{'welcome':"INFO"})
@@ -42,29 +25,14 @@ def infos(request):
 
 def error_404(request, exception):
     return render(request,"geinfo/404.html",status=404)
-@login_required
-def profil(request):
-    try:
-        etudiant = request.user
-    except Etudiant.DoesNotExist:
-
-        etudiant = None
-
-    context = {
-        'etudiant': etudiant,
-    }
-    return render(request, 'geinfo/profil.html', context)
-
-
 
 def register(request):
     # Le code de vue protégée ici
     return render(request,'geinfo/enregistrer.html',{"yes":"yep"})
 
-@login_required
+
 def admin(request):
-    etudiants=Etudiant.objects.all()
-    return render(request,"geinfo/admin.html", {"etudiants":etudiants})
+    return render(request,"adminginfo/login.html")
 
 def enregistrement_etudiant(request):
     if request.method == 'POST':
@@ -109,51 +77,7 @@ def enregistrement_etudiant(request):
         return render(request, 'geinfo/enregistrer.html')
 
 
-def modifier_photo_profil(request):
-    etudiant = get_object_or_404(Etudiant,matricule=request.user.matricule)  # Utilisez matricule pour identifier l'étudiant
 
-    if request.method == 'POST':
-        form = ModifierPhotoProfilForm(request.POST, request.FILES)
-        if form.is_valid():
-            profile_picture = form.cleaned_data['photo']
-            if profile_picture:
-                chemin_destination = os.path.join(settings.BASE_DIR, 'geinfo', 'static', 'geinfo', 'img', 'profils')
-                nom_fichier = f"{etudiant.matricule}_{profile_picture.name}"  # Utilisez le matricule pour le nom du fichier
-                chemin_fichier_destination = os.path.join(chemin_destination, nom_fichier)
-
-                os.makedirs(chemin_destination, exist_ok=True)
-
-                try:
-                    with open(chemin_fichier_destination, 'wb+') as destination:
-                        for chunk in profile_picture.chunks():
-                            destination.write(chunk)
-
-                    etudiant.profil = nom_fichier  # Enregistrez le nom du fichier dans le champ 'profil'
-                    etudiant.save()
-                    return redirect('profil')  # Remplacez par le nom de votre vue de profil
-
-                except Exception as e:
-                    form.add_error('profile_picture',f"Une erreur est survenue lors de l'enregistrement de l'image : {e}")
-
-        return render(request, 'geinfo/profil.html', {'form': form})
-
-    else:
-        form = ModifierPhotoProfilForm()
-        return render(request, 'geinfo/profil.html', {'form': form})
-
-def changer_mot_de_passe(request):
-    if request.method == 'POST':
-        form = ChangerMotDePasseForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, 'Votre mot de passe a été changé avec succès !')
-            return redirect('profil')
-        else:
-            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
-    else:
-        form = ChangerMotDePasseForm(request.user)
-    return render(request, 'geinfo/profil.html', {'form': form})
 
 def delete(request,id):
     etudiant=get_object_or_404(Etudiant,id=id)
@@ -163,3 +87,55 @@ def delete(request,id):
 def modifier_etudiant(request,id):
     etudiant=get_object_or_404(Etudiant,id=id)
     return render(request,"geinfo/modifier.html",{"etudiant":etudiant})
+
+def verif(filiere):
+    fililieres=("Licence 1", "Licence 2", "Licence 3","Master 1", "Master 2")
+    if filiere in fililieres:
+        return True
+    else: return False
+def update(request,id):
+    etudiant=get_object_or_404(Etudiant, id=id)
+    if request.method == 'POST':
+        matricule = request.POST.get('matricule')
+        nom = request.POST.get('nom')
+        prenom = request.POST.get('prenom')
+        annee_entree = request.POST.get('annee')
+        niveau = request.POST.get('niveau')
+        filiere = request.POST.get('filiere')
+
+        # Effectuer des validations supplémentaires ici si nécessaire
+        if not matricule or not nom or not prenom or not annee_entree or not niveau or not filiere:
+            messages.error(request, 'Tous les champs sont obligatoires.')
+            return render(request, 'geinfo/modifier.html')
+        if filiere !='II' and filiere !='TIC':
+            messages.error(request,"Seuls II et TIC sont valides")
+            return render(request,'geinfo/modifier.html')
+
+        if  not verif(filiere):
+            messages.error(request,"Entrez un niveau valide")
+            return render(request,'geinfo/modifier.html')
+        try:
+            annee_entree = int(annee_entree)
+        except ValueError:
+            messages.error(request, "L'année d'entrée doit être un nombre.")
+            return render(request, 'geinfo/modifier.html') # Assure-toi que le chemin est correct
+
+        # Modifier l'instance du modèle Etudiant et enregistrer les données
+        etudiant.matricule=matricule
+        etudiant.nom=nom
+        etudiant.prenom=prenom
+        etudiant.annee=annee_entree
+        etudiant.filiere=filiere
+        etudiant.niveau=niveau
+
+        try:
+            etudiant.save()
+            messages.success(request, "Les informations de l'étudiant ont été mises à jour avec succès.")
+            return redirect('admin')  # Redirigez vers la liste des étudiants
+        except Exception as e:
+            messages.error(request, f"Une erreur s'est produite lors de la mise à jour : {e}")
+
+    else:
+        # Si la requête n'est pas POST, afficher le formulaire HTML
+
+        return render(request, 'geinfo/modifier.html',{"etudiant":etudiant})
