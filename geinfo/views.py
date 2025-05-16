@@ -28,11 +28,15 @@ def error_404(request, exception):
 
 def register(request):
     # Le code de vue protégée ici
-    return render(request,'geinfo/enregistrer.html',{"yes":"yep"})
+    return render(request,'adminginfo/enregistrer.html',{"yes":"yep"})
 
 
 def admin(request):
     return render(request,"adminginfo/login.html")
+
+def administration(request):
+    etudiants=Etudiant.objects.all()
+    return render(request,"adminginfo/admin.html",{"etudiants":etudiants})
 
 def enregistrement_etudiant(request):
     if request.method == 'POST':
@@ -47,13 +51,13 @@ def enregistrement_etudiant(request):
         # Effectuer des validations supplémentaires ici si nécessaire
         if not matricule or not nom or not prenom or not annee_entree or not niveau or not filiere or not mot_de_passe_clair:
             messages.error(request, 'Tous les champs sont obligatoires.')
-            return render(request, 'geinfo/enregistrer.html')
+            return render(request, 'adminginfo/enregistrer.html')
 
         try:
             annee_entree = int(annee_entree)
         except ValueError:
             messages.error(request, "L'année d'entrée doit être un nombre.")
-            return render(request, 'geinfo/enregistrer.html') # Assure-toi que le chemin est correct
+            return render(request, 'adminginfo/enregistrer.html') # Assure-toi que le chemin est correct
 
         # Hasher le mot de passe avant de l'enregistrer
         mot_de_passe_hash = make_password(mot_de_passe_clair)
@@ -71,10 +75,10 @@ def enregistrement_etudiant(request):
         etudiant.save()
 
         messages.success(request, 'Étudiant enregistré avec succès !')
-        return redirect('admin') # Assure-toi que l'URL est correctement nommée dans ton urls.py
+        return redirect('interface') # Assure-toi que l'URL est correctement nommée dans ton urls.py
     else:
         # Si la requête n'est pas POST, afficher le formulaire HTML
-        return render(request, 'geinfo/enregistrer.html')
+        return render(request, 'adminginfo/enregistrer.html')
 
 
 
@@ -82,7 +86,7 @@ def enregistrement_etudiant(request):
 def delete(request,id):
     etudiant=get_object_or_404(Etudiant,id=id)
     etudiant.delete()
-    return redirect("admin")
+    return redirect("interface")
 
 def modifier_etudiant(request,id):
     etudiant=get_object_or_404(Etudiant,id=id)

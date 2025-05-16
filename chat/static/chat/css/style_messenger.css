@@ -1,0 +1,30 @@
+/* Assure que le corps utilise toute la hauteur de la fenêtre */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Styles pour les bulles de message */
+.msg-bubble {
+    max-width: 70%; /* Limite la largeur de la bulle */
+    word-wrap: break-word; /* Empêche le dépassement du texte */
+}
+
+.msg-right {
+    border-bottom-right-radius: 0; /* Style pour les messages envoyés par l'utilisateur */
+}
+
+.msg-left {
+    border-bottom-left-radius: 0; /* Style pour les messages reçus */
+}
+
+/* Ajustement de la zone de chat pour prendre l'espace disponible */
+.chat-box {
+    display: flex;
+    flex-direction: column-reverse; /* Affiche les derniers messages en bas */
+}
+
+/* Inverse l'ordre des messages pour le défilement (optionnel, dépend de l'effet souhaité) */
+.chat-box > div {
+    flex-shrink: 0;
+}

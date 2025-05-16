@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'Etudiants',
     'geinfo',
     'channels',
-    'messaging',
+    'chat',
     'adminginfo',
 ]
 
@@ -137,3 +137,11 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 MEDIA_URL='media/'
 SESSION_ENGINE='django.contrib.sessions.backends.db'
 ASGI_APPLICATION = "GINFO.asgi.application"
+CHANNEL_LAYERS={
+    'default':{
+        'BACKEND':'channels_redis.core.RedisChannelLayer',
+        'CONFIG':{
+            "hosts":[('127.0.0.1',6379)],
+        },
+    },
+}

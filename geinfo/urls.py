@@ -12,7 +12,10 @@ urlpatterns=[
     path('change/<int:id>/', views.modifier_etudiant, name='change'),
     path('update/<int:id>/',views.update,name='update'),
     path('administration',ginfo.login_admin,name='administration'),
+    path('interface',views.administration,name='interface'),
+
     ## Liens Etudiants
+
     path('',views.accueil,name="accueil"),
     path('connexion',views.connexion,name='connexion'),
     path('login',etudiant.connexion_etudiant,name='login'),

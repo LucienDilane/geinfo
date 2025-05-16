@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'chat/css/style_messenger.css' %}">
+    <style>
+        /* Styles additionnels ou modifications */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        .chat-box {
+            height: calc(100vh - 180px); /* Ajustez la hauteur */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Derniers messages en bas */
+        }
+        .msg-bubble {
+             max-width: 70%;
+             word-wrap: break-word;
+         }
+        .msg-right {
+            background-color: #0d6efd; /* Bootstrap primary */
+            color: white;
+            border-bottom-right-radius: 0;
+        }
+        .msg-left {
+            background-color: #e9ecef; /* Bootstrap light */
+            color: #212529;
+            border-bottom-left-radius: 0;
+        }
+         .message-container {
+             margin-bottom: 1rem;
+         }
+         /* Assurez-vous que l'image de profil a une taille définie */
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover; /* Empêche la déformation de l'image */
+        }
+        .message-sender-img {
+             width: 30px;
+             height: 30px;
+             object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-md-8 col-lg-6 col-xl-5 h-100 d-flex flex-column">
+                <div class="card flex-shrink-0 mb-3">
+                    <div class="card-header d-flex align-items-center">
+                        {% if receiver %}
+                            {# Utilise le champ 'profil' (chaine) pour construire l'URL de l'image statique #}
+                            {% if receiver.profil %}
+                                <img src="{% static 'geinfo/img/profils/' %}{{ receiver.profil }}" alt="{{ receiver.nom }}" class="rounded-circle me-2 profile-img">
+                            {% else %}
+                                {# Image par défaut si le champ profil est vide ou nul #}
+                                <img src="{% static 'geinfo/img/user.jpg' %}" alt="Image par défaut" class="rounded-circle me-2 profile-img"> {# Adaptez le chemin si votre image par défaut est nommée différemment #}
+                            {% endif %}
+                            <h5>{{ receiver.nom }}</h5> {# Utilise le champ 'nom' de l'Etudiant #}
+                        {% else %}
+                         <h5>Chargement de la conversation...</h5>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="chat-box card-body flex-grow-1">
+                    {# Les messages sont affichés en ordre inverse pour le défilement vers le bas #}
+                    {% for message in messages reversed %} {# Utilise 'reversed' pour afficher les messages du plus ancien au plus récent en bas #}
+                        {% if message.sender == sender %} {# Compare l'expéditeur du message (User) avec l'utilisateur connecté (sender) #}
+                            <div class="d-flex justify-content-end message-container">
+                                <div class="msg-bubble msg-right p-2 rounded">
+                                    {{ message.content }}
+                                    <div class="text-end text-light" style="font-size: 0.7rem;">{{ message.timestamp|date:"H:i" }}</div>
+                                </div>
+                            </div>
+                        {% else %} {# Le message est envoyé par le destinataire (Etudiant) #}
+                            <div class="d-flex justify-content-start message-container">
+                                {# Accéder à la photo de profil de l'expéditeur du message (l'Etudiant), en utilisant le champ 'profil' #}
+                                {# Note : Cela suppose que message.sender est bien l'objet Etudiant quand le message n'est pas envoyé par l'utilisateur connecté #}
+                                {% if message.sender.profil %}
+                                    <img src="{% static 'geinfo/img/profils/' %}{{ message.sender.profil }}" alt="{{ message.sender.nom }}" class="rounded-circle me-2 message-sender-img">
+                                {% else %}
+                                    {# Image par défaut si le champ profil de l'expéditeur est vide #}
+                                     <img src="{% static 'geinfo/img/user.jpg' %}" alt="Image par défaut" class="rounded-circle me-2 message-sender-img"> {# Adaptez le chemin #}
+                                {% endif %}
+                                <div class="msg-bubble msg-left p-2 rounded">
+                                    {{ message.content }}
+                                    {# Assurez-vous que votre modèle Message a un champ timestamp #}
+                                    <div class="text-muted" style="font-size: 0.7rem;">{{ message.timestamp|date:"H:i" }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                     <p class="text-center">Commencez la conversation !</p>
+                    {% endfor %}
+                </div>
+
+                {% if receiver %}
+                <div class="card-footer flex-shrink-0 mt-3">
+                    {# Le formulaire envoie un message à l'Etudiant (receiver) #}
+                    <form action="{% url 'message' receiver.id %}" method="post" class="d-flex"> {# Adaptez le nom de l'URL si nécessaire #}
+                        {% csrf_token %}
+                        <input type="text" name="message" class="form-control me-2" placeholder="Tapez votre message..." required>
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

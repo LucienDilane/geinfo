@@ -77,6 +77,7 @@
     * Bibliothèques à installer sur python
         - Django
         - channels
+        - channels_redis
         - daphne pour la connexion des websockets
 
 ## Liens utiles

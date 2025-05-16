@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+      const chatSocket = new WebSocket(
+          'ws://' + window.location.host + '/ws/chat/' + recipientUsername + '/'
+      );
+
+      chatSocket.onmessage = function(e) {
+          const data = JSON.parse(e.data);
+          const messageElement = document.createElement('div');
+          messageElement.classList.add('message', 'received');
+          messageElement.innerHTML = `<div class="bubble">${data.sender}: ${data.message}</div>`;
+          document.getElementById('messages').appendChild(messageElement);
+          document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+      };
+
+      document.getElementById('chatForm').onsubmit = function(e) {
+          e.preventDefault();  // Empêche le rechargement de la page
+          const messageInputDom = document.getElementById('messageInput');
+          const message = messageInputDom.value;
+
+          if (message) {
+              const messageElement = document.createElement('div');
+              messageElement.classList.add('message', 'sent');
+              messageElement.innerHTML = `<div class="bubble">${message}</div>`;
+              document.getElementById('messages').appendChild(messageElement);
+              chatSocket.send(JSON.stringify({'message': message}));
+              messageInputDom.value = '';  // Réinitialise la zone de saisie
+              document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+          }
+      };
+  </script>
+
+</body>
+</html>

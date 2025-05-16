@@ -5,17 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum Blur</title>
-     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             background: #f4f4f4;
         }
         .hero {
-            """background-image: url("{% static 'geinfo/img/logo.jpg'%}");"""
+            /* La ligne background-image était commentée, et background: aqua; la surchargerait. */
+            /* Si vous voulez une image, décommentez la ligne ci-dessous et assurez-vous que le chemin du fichier statique est correct. */
+            /* background-image: url("{% static 'geinfo/img/logo.jpg'%}"); */
             background-repeat: no-repeat;
             background-position: center;
-            background:aqua;
+            background-color: aqua; /* Utiliser background-color pour plus de clarté */
             color: white;
             padding: 100px 20px;
             text-align: center;
@@ -25,10 +27,15 @@
             padding: 15px;
             text-align: center;
             border-radius: 5px;
+            margin-bottom: 20px; /* Ajout d'un espace sous la bannière */
         }
         .category-card {
             margin-bottom: 20px;
         }
+         .category-card .card-title {
+            color: white; /* S'assurer que le titre est lisible sur le fond primaire */
+            padding: 10px; /* Ajouter un peu de padding au titre */
+         }
     </style>
 </head>
 <body>
@@ -37,7 +44,7 @@
     <h1>GINFO</h1>
     <p>Plateforme d'échange entre anciens et nouveaux etudiants</p>
     <div>
-        <a class="btn btn-warning" href="{% url 'connexion' %}"><i class="fas fa-sign-in-alt"> Connexion</i></a> <!-- Bouton de connexion avec icône -->
+        <a class="btn btn-warning btn-lg" href="{% url 'connexion' %}"><i class="fas fa-sign-in-alt"></i> Connexion</a>
     </div>
 </header>
 
@@ -45,7 +52,9 @@
     <div class="row">
         <div class="col-md-8">
             <div class="category-card card">
-                <h5 class="card-title bg-primary">GINFO - Nouvelles</h5>
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">GINFO - Nouvelles</h5>
+                </div>
                 <div class="card-body">
                     <p class="card-text">Les dernières nouvelles et informations sur le forum.</p>
                     <a href="{% url 'propos' %}" class="btn btn-primary">Voir</a>
@@ -54,14 +63,18 @@
             <h2>Discussions</h2>
 
             <div class="category-card card">
-                <h5 class="card-title bg-primary">Discussion Générale</h5>
+                 <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Discussion Générale</h5>
+                </div>
                 <div class="card-body">
                     <p class="card-text">Discussion sur GINFO. Traite de tous les sujets avec tout le monde.</p>
                     <a href="#" class="btn btn-primary">Voir</a>
                 </div>
             </div>
             <div class="category-card card">
-                <h5 class="card-title bg-primary">Mode Solo</h5>
+                 <div class="card-header bg-primary text-white">
+                     <h5 class="mb-0">Mode Solo</h5>
+                </div>
                 <div class="card-body">
                     <p class="card-text">Discussion sur le mode solo de Blur.</p>
                     <a href="#" class="btn btn-primary">Voir</a>
@@ -83,8 +96,8 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js" integrity="sha384-K9/ruXcNOk1RfC0+c5BUk6RVadF+w5Zp1f4c5dF5l9q5e5f5r5z5u5t5w5d5n5p5c5ja5a5b5c5d5e5f5g5h5i5j5k5l5m5n5o5p5q5r5s5t5u5v5w5x5y5z2" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4Ag8PEjQ+lRFA9/KBYL6P3j3Q9gVCbvhz2v2J2P2g2d2i2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z2" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -4,8 +4,8 @@ from django.contrib.auth import authenticate
 
 
 class LoginForm(forms.Form):
-    identifiant = forms.CharField(max_length=150, label='username')
-    motdepasse = forms.CharField(widget=forms.PasswordInput, label='password')
+    username = forms.CharField(max_length=150, label='username')
+    password = forms.CharField(widget=forms.PasswordInput, label='password')
 
     def clean(self):
         username = self.cleaned_data.get('username')
