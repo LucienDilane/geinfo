@@ -22,8 +22,23 @@
     <li class="nav-item">
         <a class="nav-link" aria-current="page" href="#">Rechercher<i class="bi bi-search"></i></a>
     </li>
+    {% endblock nav  %}
 
-{% endblock nav  %}
+        {% block btn %}
+            {% if user.is_authenticated %}
+        <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %} {# C'est essentiel pour la sécurité ! #}
+                        <button type="submit" class="btn btn-danger">Déconnexion</button>
+                    </form>
+                    {% else %}
+                        <a href="{% url 'login' %}">Connexion</a>
+                    {% endif %}
+        {% endblock btn  %}
+
+                </div>
+
+
+
 
 {% block content %}
 <div class="container mt-5">
@@ -47,6 +62,11 @@
                     <h5 class="mb-2">{{ user.nom }} {{ user.prenom }}</h5>
                     <p class="text-muted mb-1">{{ user.matricule }}</p>
                     <p class="text-muted mb-3">{{ user.niveau }} - {{ user.filiere }}</p>
+                    <p>{% if text1 %}
+                                {{text1.tex1}}{% endif %}
+
+                                {% if text2 %}
+                                {{text2.tex2}}{% endif %}</p>
                 </div>
                 <hr class="my-0">
                 <div class="card-body">
@@ -80,31 +100,53 @@
             </div>
         </div>
 
-        <div class="card shadow-sm mb-4">
-                <div class="card-header bg-info text-white py-3">
-                    <h4 class="mb-0">Groupes</h4>
-                </div>
-                <div class="card-body">
-                    {% if user.groups.all %}
+             <div class="row">
+                 <div class="col-md-6 card shadow-sm mb-4">
+            <div class="card-header bg-info text-white py-3">
+                <h4 class="mb-0">Mes groupes</h4>
+            </div>
+            <div class="row">
+                {% if user.groups.all %}
                         <ul class="list-group list-group-flush">
                             {% for group in user.groups.all %}
-                                <li class="list-group-item">{{ group.name }}</li>
+                                <li class="list-group-item"><img src="{{ group.profile_image.url }}" alt="Groupe" class="profile-img">{{ group.name }}</li>
                             {% endfor %}
                         </ul>
                     {% else %}
                         <p class="text-muted">Vous n'appartenez à aucun groupe pour le moment.</p>
                     {% endif %}
+                <div class="d-flex justify-content-end mt-3">
+                    <a class="btn btn-primary me-2">Voir tous les groupes</a> <a class="btn btn-success">Creer mon groupe</a>
                 </div>
             </div>
+        </div>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark py-3">
-                    <h4 class="mb-0">Déconnexion</h4>
-                </div>
-                <div class="card-body">
-                    <p class="mb-0">Prêt à quitter votre espace utilisateur ?</p>
-                    <a href="{% url 'logout' %}" class="btn btn-danger mt-2">Se déconnecter</a>
-                </div>
+        <div class="col-md-6 card shadow-sm mb-4">
+            <div class="conversation-header card-header bg-warning text-black py-3">
+                <h4>Conversations récentes</h4>
+            </div>
+            <div class="row">
+               {% if last_5_contacts %}
+                    <ul>
+                        {% for contact_etudiant in last_5_contacts %}
+                            <li>
+                                {# Supposons que vous ayez une URL pour le profil d'un étudiant avec son username ou son ID #}
+                                {# Si vous avez une URL pour le profil d'un autre étudiant, remplacez 'profil_etudiant' et l'argument #}
+
+                                {{ contact_etudiant.nom }} <a href="{% url 'chat_view' contact_etudiant.id %}" class="btn btn-primary btn-sm">Discuter</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+             {% else %}
+                <p>Aucune conversation récente.</p>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
             </div>
         </div>
     </div>
@@ -175,6 +217,7 @@
                                 <div class=" input-group mb-3">
                                     <input type="password" class="form-control" id="cmdp" name="new_password2" placeholder="Confirmer le nouveau de passe" data-bs-toggle="password">
                                 </div>
+
 
                                  
 

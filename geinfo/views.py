@@ -1,20 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
-from django.conf import settings
-from django.conf import settings
-import os
-import uuid  # Pour générer des noms de fichiers uniques
-from datetime import timedelta
+
 from Etudiants.models import Etudiant
+
+
+
 
 
 
 # Create your views here.
 def accueil(request):
-    return render(request,'geinfo/accueil.html',{"info":"INFO"})
+    return render(request,'geinfo/index.html',{"info":"INFO"})
 
 def connexion(request):
     return render(request,'Etudiants/connexion.html',{"con":"yes"})

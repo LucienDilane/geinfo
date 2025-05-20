@@ -3,44 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion - GINFO admin</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Interface Administrateur</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .admin-header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .student-card, .group-card, .announcement-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-fluid">
 
-        <header class="bg-primary text-white py-3">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-9">
-                    <h1>GINFO admin</h1>
-                </div>
-                <div class="col-md-3 text-right">
+<header class="admin-header">
+    <h1>Gestion des Étudiants</h1>
+     <div class="col-md-3 text-right">
                     <a href="{% url 'register' %}" class="btn btn-success">Ajouter un etudiant</a>
                 </div>
+</header>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card-header bg- text-black py-3">
+
+                </div>
+            <div class="row">
+
+                <div class="col-12">
+                      <h2>Liste des Etudiants</h2>
+                    {% if etudiants %}
+                      <ul class="list-group">
+                        {% for etudiant in etudiants %}
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                             {{ etudiant.matricule }} {{etudiant.nom}} {{etudiant.prenom}} {{etudiant.filiere}} {{etudiant.niveau}}
+
+                          </li>
+                          <div>
+                                <a href="{% url 'change' etudiant.id %}" class="btn btn-primary btn-sm">Modifier</a>
+                              <a href="{% url 'delete' etudiant.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                            </div>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      <p>Aucun etudiant disponible.</p>
+                    {% endif %}
+                    </div>
+                </div>
+
+
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <h2>Groupes Disponibles</h2>
+            <div class="row">
+                {% for group in groups %}
+                <div class="col-12">
+                    <div class="group-card">
+                        <h5>{{ group.name }}</h5>
+                        <p>Membres: {{ group.member_count }}</p>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
-    </header>
-  <div class="container mt-5">
-    <h2>Liste des Etudiants</h2>
-    {% if etudiants %}
-      <ul class="list-group">
-        {% for etudiant in etudiants %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-             {{ etudiant.matricule }} {{etudiant.nom}} {{etudiant.prenom}} {{etudiant.filiere}} {{etudiant.niveau}}
-            <a href="{% url 'change' etudiant.id %}" class="btn btn-primary btn-sm">Modifier</a>
-              <a href="{% url 'delete' etudiant.id %}" class="btn btn-danger btn-sm">Supprimer</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>Aucun etudiant disponible.</p>
-    {% endif %}
-  </div>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <h2>Annonces</h2>
+            <div class="row">
+                {% for announcement in announcements %}
+                <div class="col-12">
+                    <div class="announcement-card">
+                        <h5>{{ announcement.title }}</h5>
+                        <p>{{ announcement.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <h2>Nouvelle Annonce</h2>
+            <form method="post" action="{% url 'annonce' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="title">Titre de l'annonce</label>
+                    <input type="text" class="form-control" id="title" placeholder="Titre de l'annonce" name="titre">
+                </div>
+                <div class="form-group">
+                    <label for="content">Contenu de l'annonce</label>
+                    <textarea class="form-control" id="content" rows="3" placeholder="Contenu de l'annonce" name="corps"></textarea>
+                </div>
+                <div><label for="join">Pièce jointe</label> <input type="file" name="annonceMedia" id="join"></div>
+                <button type="submit" class="btn btn-primary">Publier l'annonce</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-4">
+    <p>&copy; Plateforme d'Echange GINFO 2025</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

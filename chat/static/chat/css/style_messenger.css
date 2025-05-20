@@ -3,6 +3,9 @@ html, body {
     height: 100%;
     margin: 0;
 }
+#container{
+    box-shadow: 8px 8px 8px grey;
+}
 
 /* Styles pour les bulles de message */
 .msg-bubble {

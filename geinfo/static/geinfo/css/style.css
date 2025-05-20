@@ -23,7 +23,8 @@ img{
 #content{
     margin-top: 4%;
     margin-bottom: 0%;
-   background: linear-gradient(to right, rgba(255,255,255,0.1) 0%, rgba(255,215,0,0.5) 50%,rgba(255,215,0,0.5) 100% );
+   /*background: linear-gradient(to right, rgba(255,255,255,0.1) 0%, rgba(255,215,0,0.5) 50%,rgba(255,215,0,0.5) 100% );*/
+   background-image: linear-gradient(to right top, #ffffff, #eef4ff, #cfecff, #a3e7ff, #6be3fc);
 }
 form{
     margin-left: 5%;

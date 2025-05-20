@@ -23,7 +23,7 @@ urlpatterns=[
     path('profil',etudiant.profil,name="profil"),
     path('admin-register',views.register,name='register'),
     path('register',views.enregistrement_etudiant,name='register'),
-    path('accounts/logout/', auth_views.LogoutView.as_view(next_page='connexion'), name='logout'),
+    path('logout', auth_views.LogoutView.as_view(next_page='connexion'), name='logout'),
     path('changerphoto',etudiant.modifier_photo_profil,name='changerphoto'),
     path('changepassword',etudiant.changer_mot_de_passe,name='changepassword'),
 

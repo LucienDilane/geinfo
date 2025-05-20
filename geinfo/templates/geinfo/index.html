@@ -1,0 +1,449 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Ginfo Plaeforme</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="{% static 'geinfo/img/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'geinfo/css/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'geinfo/css/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'geinfo/css/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'geinfo/css/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'geinfo/css/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{% static 'geinfo/css/main.css' %}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: iLanding
+  * Template URL: https://bootstrapmade.com/ilanding-bootstrap-landing-page-template/
+  * Updated: Nov 12 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1 class="sitename">GINFO</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{% url 'accueil' %}" class="active">Accueil</a></li>
+          <li><a href="#about">A propos</a></li>
+          <li><a href="#contact">Contact</a></li>
+
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="{% url 'connexion' %}">Se connecter</a>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+              <div class="company-badge mb-4">
+                <i class="bi bi-gear-fill me-2"></i>
+                Working for your success
+              </div>
+
+              <h1 class="mb-4">
+               BIENVENUE Sur <br>
+                La Plateforme<br>
+                <span class="accent-text">GINFO</span>
+              </h1>
+
+              <p class="mb-4 mb-md-5">
+                La plateforme d'echange enre nouveaux et anciens etudiants du departemntdu Genie Informaique de l'ENSET de Douala
+              </p>
+
+              <div class="hero-buttons">
+                <a href="{% url 'connexion' %}" class="btn btn-primary me-0 me-sm-2 mx-1">Se connecter</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
+              <img src="{% static 'geinfo/img/img/illustration-1.webp' %}" alt="Hero Image" class="img-fluid">
+
+              <div class="customers-badge">
+                <div class="customer-avatars">
+                  <img src="{% static 'geinfo/img/img/avatar-1.webp' %}" alt="Customer 1" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-2.webp' %}" alt="Customer 2" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-3.webp' %}" alt="Customer 3" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-4.webp' %}" alt="Customer 4" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-5.webp' %}" alt="Customer 5" class="avatar">
+                  <span class="avatar more">5+</span>
+                </div>
+                <p class="mb-0 mt-2">Echangez avec plus de 500 etudians </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row stats-row gy-4 mt-5" data-aos="fade-up" data-aos-delay="500">
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-people"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Echange en groupe</h4>
+                <p class="mb-0">Possibilie de creer son forum</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-megaphone"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Nouveautes</h4>
+                <p class="mb-0">Suivre l'actualie du departement</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-graph-up"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Suivie</h4>
+                <p class="mb-0">Vous avez la possibilite d'etre suivi par les aines</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-envelope"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Messagerie privee</h4>
+                <p class="mb-0">Echangez en privee avec un autre etudiant sur la plateforme</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4 align-items-center justify-content-between">
+
+          <div class="col-xl-5" data-aos="fade-up" data-aos-delay="200">
+            <span class="about-meta">A propos de la plateforme</span>
+            <h2 class="about-title">La Plateforme d'Echange entre anciens et nouveaux eudiants</h2>
+            <p class="about-description">La plateforme d'echange est un reseau qui regroupe des anciens et nouveaux etudiants du departement
+            du Genie Informaique de l'ENSET de Douala. Elle est concue pour faciliter la communication
+            et le partage d'experiences entre les etudiants de differentes generations<br>
+            Cette plateforme vise donc a: </p>
+
+            <div class="row feature-list-wrapper">
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Faciliter la mise en reseau entre les anciens et les nouveaux etudiants</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Partager les connaissances et les experiences</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Offrir les conseils et les orientations pour les nouveaux etudiants</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Creer une communaute solidaire et dynamique</li>
+                </ul>
+              </div>
+            </div>
+
+            <p class="about-description">Les fonctionalites proposees sont les suivantes: </p>
+             <div class="row feature-list-wrapper">
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Un forum de discussion pour partager les experiences et les idees</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Un systeme de messagerie privee pour communiquer avec les aures membres</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Un espace de partage des ressources pour acceder a des documents et des informations
+                  utiles</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Differents autres fora pour echanger des idees sur un sujet precis</li>
+                </ul>
+              </div>
+            </div>
+
+            <p class="about-description">Les avantages a etre sur la plateforme: </p>
+             <div class="row feature-list-wrapper">
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Rencontrer des personnes partageant les memes interets et objectifs</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Beneficier des conseils et l'experience des anciens etudiants</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Developper ses connaissances et ses competences</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Etre partie d'une communaute dynamique et solidaire</li>
+                </ul>
+              </div>
+            </div>
+             <p class="about-description">Nous souhaitons a tous la bienvenue, et esperons que l'aventure sera belle</p>
+
+            <div class="info-wrapper">
+              <div class="row gy-4">
+                <div class="col-lg-5">
+                  <div class="profile d-flex align-items-center gap-3">
+                    <img src="{% static 'geinfo/img/me.jpg' %}" alt="CEO Profile" class="profile-image">
+                    <div>
+                      <h4 class="profile-name">DAMA Lucien</h4>
+                      <p class="profile-position">GINFO; II3</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-5">
+                  <div class="profile d-flex align-items-center gap-3">
+                    <img src="{% static 'geinfo/img/lynne.jpg' %}" alt="CEO Profile" class="profile-image">
+                    <div>
+                      <h4 class="profile-name">BASSA Lynne</h4>
+                      <p class="profile-position">GINFO; II3</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="col-xl-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="image-wrapper">
+              <div class="images position-relative" data-aos="zoom-out" data-aos-delay="400">
+                <img src="{% static 'geinfo/img/img/about-5.webp' %}" alt="Business Meeting" class="img-fluid main-image rounded-4">
+                <img src="{% static 'geinfo/img/img/about-2.webp' %}" alt="Team Discussion" class="img-fluid small-image rounded-4">
+              </div>
+              <div class="experience-badge floating">
+                <h3>GINFO <span></span></h3>
+                <p>Plus que des camarades,<br> Nous sommes des partenaires</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /About Section -->
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section light-background">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Contact</h2>
+        <p>Proposez vos avis a l'equipe et soumettez vos soucis en remplissant le formulaire</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row g-4 g-lg-5">
+          <div class="col-lg-5">
+            <div class="info-box" data-aos="fade-up" data-aos-delay="200">
+              <h3>Contact Info</h3>
+              <p>Aidez nous a ameliorer la plateforme en nous envoyant un mail</p>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="icon-box">
+                  <i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="content">
+                  <h4>Universite de Douala</h4>
+                  <p>ENSET de Douala</p>
+                  <p>Departement de Genie Informatique</p>
+                </div>
+              </div>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="icon-box">
+                  <i class="bi bi-telephone"></i>
+                </div>
+                <div class="content">
+                  <h4>Numero de telephone</h4>
+                  <p>+1 5589 55488 55</p>
+                  <p>+1 6678 254445 41</p>
+                </div>
+              </div>
+
+              <div class="info-item" data-aos="fade-up" data-aos-delay="500">
+                <div class="icon-box">
+                  <i class="bi bi-envelope"></i>
+                </div>
+                <div class="content">
+                  <h4>Email Address</h4>
+                  <p>info@example.com</p>
+                  <p>contact@example.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="contact-form" data-aos="fade-up" data-aos-delay="300">
+              <h3>Get In Touch</h3>
+              <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ante ipsum primis.</p>
+
+              <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+                <div class="row gy-4">
+
+                  <div class="col-md-6">
+                    <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
+                  </div>
+
+                  <div class="col-md-6 ">
+                    <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
+                  </div>
+
+                  <div class="col-12">
+                    <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
+                  </div>
+
+                  <div class="col-12">
+                    <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
+                  </div>
+
+                  <div class="col-12 text-center">
+                    <div class="loading">Loading</div>
+                    <div class="error-message"></div>
+                    <div class="sent-message">Message envoye💥... Merci💖</div>
+
+                    <button type="submit" class="btn">Send Message</button>
+                  </div>
+
+                </div>
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section><!-- /Contact Section -->
+
+  </main>
+
+  <footer id="footer" class="footer">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">GINFO</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p>Enset Douala</p>
+            <p class="mt-3"><strong>Phone:</strong> <span>(237) 691.14.25.44</span></p>
+            <p><strong>Email:</strong> <span>Email: ensetdsfc@yahoo.fr</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="{% url 'accueil' %}">Accueil</a></li>
+            <li><a href="{% url 'accueil' %}#about">About us</a></li>
+            <li><a href="#">Annonces</a></li>
+
+
+
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Liens utiles</h4>
+          <ul>
+            <li><a href="https://univ-douala.cm/">Universite de Douala</a></li>
+            <li><a href="https://www.ensetdouala.net/">Enset de Douala</a></li>
+
+        </div>
+
+
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">Plateforme GINFO</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you've purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'geinfo/js/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'geinfo/js/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'geinfo/js/aos/aos.js' %}"></script>
+  <script src="{% static 'geinfo/js/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'geinfo/js/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'geinfo/js/purecounter/purecounter_vanilla.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'geinfo/js/main.js' %}"></script>
+
+</body>
+
+</html>
