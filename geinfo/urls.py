@@ -13,6 +13,10 @@ urlpatterns=[
     path('update/<int:id>/',views.update,name='update'),
     path('administration',ginfo.login_admin,name='administration'),
     path('interface',views.administration,name='interface'),
+    path('api/etudiants/', views.etudiants_list_api, name='etudiants_list_api'),
+    path('api/etudiants/<str:matricule>/', views.etudiant_detail_api, name='etudiant_detail_api'),
+    path('api/etudiants/<str:matricule>/update/', views.etudiant_update_api, name='etudiant_update_api'),
+
 
     ## Liens Etudiants
 

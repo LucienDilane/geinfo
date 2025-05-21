@@ -44,10 +44,29 @@ class Etudiant(AbstractBaseUser,PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     is_staff= models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+
     objects=EtudiantManager()
     USERNAME_FIELD="matricule"
     REQUIRED_FIELDS = ["password"]
 
+    forums = models.ManyToManyField(
+        'forum.Forum',  # <-- Référence le modèle Forum par son label d'application et son nom
+        related_name='membres',
+        blank=True,
+        verbose_name="Forums d'appartenance"
+    )
+
+    class Meta:
+        verbose_name = "Etudiant"
+        verbose_name_plural = "Etudiants"
+        ordering = ['nom', 'prenom']
+
     def __str__(self):
+        return f"{self.nom} {self.prenom} ({self.matricule})"
+
+    def get_full_name(self):
+        return f"{self.nom} {self.prenom}"
+
+    def get_short_name(self):
         return self.matricule
 

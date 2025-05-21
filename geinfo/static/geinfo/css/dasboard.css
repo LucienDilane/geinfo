@@ -1,0 +1,164 @@
+ body {
+            background-color: #f8f9fa; /* Arrière-plan gris clair */
+        }
+        .wrapper {
+            display: flex;
+            min-height: 100vh; /* Hauteur totale de la fenêtre */
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #fff; /* Arrière-plan blanc pour la barre latérale */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding-top: 20px;
+            position: sticky; /* Barre latérale collante */
+            top: 0;
+            align-self: flex-start;
+            flex-shrink: 0; /* Empêche le shrinking */
+        }
+        .sidebar .logo {
+            text-align: center;
+            padding-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .sidebar .nav-link {
+            color: #6c757d; /* Texte gris pour les liens */
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer; /* Indique que c'est cliquable */
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #f0f0f0; /* Arrière-plan plus clair au survol/actif */
+            color: #007bff; /* Bleu pour le lien actif */
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .sidebar .upgrade-pro {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-radius: 0.5rem; /* Coins arrondis pour la barre de navigation */
+        }
+
+        /* --- Styles spécifiques aux contenus --- */
+        .content-section {
+            display: none; /* Cacher toutes les sections par défaut */
+        }
+        .content-section.active-content {
+            display: block; /* Afficher la section active */
+        }
+
+        /* Styles pour les cartes de profil et de formulaire - restent les mêmes que précédemment */
+        .profile-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-card .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: -60px auto 20px;
+            border: 5px solid #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .profile-card .header-bg {
+            height: 120px;
+            background-image: url('https://via.placeholder.com/400x120/f0f0f0/cccccc');
+            background-size: cover;
+            background-position: center;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            margin: -20px -20px 0;
+        }
+        .profile-card h4 { margin-bottom: 5px; color: #333; }
+        .profile-card .username { color: #007bff; font-size: 0.9rem; }
+        .profile-card .quote { font-style: italic; color: #6c757d; margin-top: 15px; }
+        .profile-stats { display: flex; justify-content: space-around; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
+        .profile-stats div { text-align: center; }
+        .profile-stats .value { font-size: 1.2rem; font-weight: bold; color: #333; }
+        .profile-stats .label { font-size: 0.8rem; color: #6c757d; }
+        .form-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+        .form-card h5 {
+            margin-bottom: 25px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .form-card .form-label { font-weight: 500; color: #555; margin-bottom: 5px; display: block; }
+        .form-control { border-radius: 0.3rem; border: 1px solid #dee2e6; padding: 0.6rem 0.75rem; }
+        .form-control:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25); }
+        textarea.form-control { min-height: 100px; resize: vertical; }
+        .team-members-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .team-members-card h5 { color: #333; margin-bottom: 20px; }
+        .team-member-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .team-member-item:last-child { border-bottom: none; }
+        .team-member-item img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .team-member-info strong { display: block; color: #333; }
+        .team-member-info span { font-size: 0.85rem; color: #6c757d; }
+        .team-member-status { margin-left: auto; color: #28a745; font-size: 1.5rem; }
+        .team-member-status.offline { color: #dc3545; }
+        .btn-update-profile { background-color: #007bff; color: #fff; border: none; padding: 10px 25px; border-radius: 0.3rem; transition: background-color 0.3s ease; }
+        .btn-update-profile:hover { background-color: #0056b3; color: #fff; }
+        .activate-windows { text-align: right; margin-top: 20px; color: #6c757d; font-size: 0.9rem; }
+        .activate-windows a { color: #007bff; text-decoration: none; }
+
+        /* Styles pour les cartes de forums et annonces */
+        .card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 1.25rem 1.5rem;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .card-header h5 {
+            margin-bottom: 0;
+            color: #333;
+        }
+        .list-group-item {
+            padding: 1rem 1.5rem;
+            border-color: #eee;
+        }
+        .alert {
+            margin-bottom: 1rem;
+        }

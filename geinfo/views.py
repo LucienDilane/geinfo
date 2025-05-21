@@ -1,6 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.templatetags.static import static
+
+import json
 
 from Etudiants.models import Etudiant
 
@@ -32,8 +37,76 @@ def admin(request):
     return render(request,"adminginfo/login.html")
 
 def administration(request):
-    etudiants=Etudiant.objects.all()
-    return render(request,"adminginfo/admin.html",{"etudiants":etudiants})
+    return render(request,"adminginfo/dashboard.html")
+
+def etudiants_list_api(request):
+    etudiants = Etudiant.objects.all().values('matricule', 'nom', 'prenom', 'filiere', 'annee', 'profil', 'niveau')
+    # Pour chaque étudiant, assurez-vous que 'profil' est un chemin absolu si nécessaire
+    # Ou que Django puisse servir les fichiers statiques correctement.
+    # Ex: si profil est un chemin relatif à MEDIA_ROOT, vous devrez peut-être le préfixer.
+    # Ici, nous supposons qu'il s'agit d'une URL directe ou d'un chemin statique déjà accessible.
+    data = list(etudiants)
+    return JsonResponse(data, safe=False)
+
+# Fonction utilitaire pour obtenir l'URL complète du profil
+def get_profile_url(profile_filename):
+    if profile_filename:
+        # Construit le chemin relatif dans le dossier static
+        # Assurez-vous que 'geinfo' est le nom de votre application
+        static_path = f"geinfo/img/profils/{profile_filename}"
+        return static(static_path)
+    return static("geinfo/img/user.jpg") # Chemin vers votre image de profil par défaut
+
+# Vue API pour lister tous les étudiants
+def etudiants_list_api(request):
+    etudiants_queryset = Etudiant.objects.all()
+    data = []
+    for etudiant in etudiants_queryset:
+        data.append({
+            'matricule': etudiant.matricule,
+            'nom': etudiant.nom,
+            'prenom': etudiant.prenom,
+            'filiere': etudiant.filiere,
+            'annee': etudiant.annee,
+            'niveau': etudiant.niveau,
+            'profil': get_profile_url(etudiant.profil), # Utiliser la fonction utilitaire
+        })
+    return JsonResponse(data, safe=False)
+
+# Vue API pour obtenir les détails d'un seul étudiant
+def etudiant_detail_api(request, matricule):
+    etudiant = get_object_or_404(Etudiant, matricule=matricule)
+    data = {
+        'matricule': etudiant.matricule,
+        'nom': etudiant.nom,
+        'prenom': etudiant.prenom,
+        'annee': etudiant.annee,
+        'niveau': etudiant.niveau,
+        'filiere': etudiant.filiere,
+        'profil': get_profile_url(etudiant.profil), # Utiliser la fonction utilitaire
+        # Excluez le mot de passe ici
+    }
+    return JsonResponse(data)
+
+# Vue API pour mettre à jour les informations d'un étudiant (aucun changement ici pour le profil)
+@csrf_exempt
+def etudiant_update_api(request, matricule):
+    if request.method == 'POST':
+        etudiant = get_object_or_404(Etudiant, matricule=matricule)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        etudiant.nom = data.get('nom', etudiant.nom)
+        etudiant.prenom = data.get('prenom', etudiant.prenom)
+        etudiant.annee = data.get('annee', etudiant.annee)
+        etudiant.niveau = data.get('niveau', etudiant.niveau)
+        etudiant.filiere = data.get('filiere', etudiant.filiere)
+
+        etudiant.save()
+        return JsonResponse({'message': 'Etudiant mis à jour avec succès', 'matricule': etudiant.matricule})
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 def enregistrement_etudiant(request):
     if request.method == 'POST':

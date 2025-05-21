@@ -1,0 +1,756 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Étudiants</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Conservez tout votre CSS précédent ici */
+        body {
+            background-color: #f8f9fa; /* Arrière-plan gris clair */
+        }
+        .wrapper {
+            display: flex;
+            min-height: 100vh; /* Hauteur totale de la fenêtre */
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #fff; /* Arrière-plan blanc pour la barre latérale */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding-top: 20px;
+            position: sticky; /* Barre latérale collante */
+            top: 0;
+            align-self: flex-start;
+            flex-shrink: 0; /* Empêche le shrinking */
+            z-index: 1000; /* Pour s'assurer qu'il est au-dessus du contenu */
+        }
+        .sidebar .logo {
+            text-align: center;
+            padding-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .sidebar .nav-link {
+            color: #6c757d; /* Texte gris pour les liens */
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer; /* Indique que c'est cliquable */
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #f0f0f0; /* Arrière-plan plus clair au survol/actif */
+            color: #007bff; /* Bleu pour le lien actif */
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .sidebar .upgrade-pro {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+        }
+        .sidebar .upgrade-pro .btn-outline-primary {
+            border-color: #007bff;
+            color: #007bff;
+        }
+        .sidebar .upgrade-pro .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+        }
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-radius: 0.5rem; /* Coins arrondis pour la barre de navigation */
+        }
+        .navbar .navbar-brand {
+            font-weight: 500;
+        }
+        .navbar .nav-link {
+            color: #6c757d;
+            transition: color 0.3s ease;
+        }
+        .navbar .nav-link:hover {
+            color: #007bff;
+        }
+        .navbar .dropdown-menu {
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+            border-radius: 0.5rem;
+        }
+        .navbar .dropdown-item {
+            color: #333;
+        }
+        .navbar .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+
+
+        /* --- Styles spécifiques aux contenus --- */
+        .content-section {
+            display: none; /* Cacher toutes les sections par défaut */
+        }
+        .content-section.active-content {
+            display: block; /* Afficher la section active */
+        }
+
+        /* Styles pour les cartes de profil et de formulaire */
+        .profile-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative; /* Pour positionner l'image */
+        }
+        #profile-header-bg { /* ID pour le fond d'en-tête */
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            margin: -20px -20px 0; /* Align with card edges */
+        }
+        #profile-image { /* ID pour l'image de profil */
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: -60px auto 20px; /* Remonter pour chevaucher l'en-tête */
+            border: 5px solid #fff; /* Bordure blanche */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative; /* Pour z-index */
+            z-index: 1;
+        }
+        #profile-name { /* ID pour le nom */
+            margin-bottom: 5px;
+            color: #333;
+        }
+        #profile-username { /* ID pour l'username (ici le matricule) */
+            color: #007bff;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        #profile-quote { /* ID pour la citation */
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .profile-stats div { text-align: center; }
+        #stats-filiere-value { font-size: 1.2rem; font-weight: bold; color: #333; }
+        #stats-filiere-label { font-size: 0.8rem; color: #6c757d; }
+        #stats-annee-value { font-size: 1.2rem; font-weight: bold; color: #333; }
+        #stats-annee-label { font-size: 0.8rem; color: #6c757d; }
+        #stats-niveau-value { font-size: 1.2rem; font-weight: bold; color: #333; }
+        #stats-niveau-label { font-size: 0.8rem; color: #6c757d; }
+
+        .form-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+        .form-card .card-header-custom {
+            margin: -30px -30px 20px;
+            padding: 20px 30px;
+            background-color: #007bff;
+            color: #fff;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,123,255,.2);
+        }
+        .form-card .card-header-custom h5 {
+            margin-bottom: 0;
+            color: #fff;
+        }
+        .form-card .form-label { font-weight: 500; color: #555; margin-bottom: 5px; display: block; }
+        .form-control { border-radius: 0.3rem; border: 1px solid #dee2e6; padding: 0.6rem 0.75rem; }
+        .form-control:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25); }
+        textarea.form-control { min-height: 100px; resize: vertical; }
+        .team-members-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .team-members-card h5 { color: #333; margin-bottom: 20px; }
+        .team-member-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer; /* Indique que l'élément est cliquable */
+            transition: background-color 0.2s ease;
+        }
+        .team-member-item:hover {
+            background-color: #f8f9fa; /* Léger survol */
+        }
+        .team-member-item:last-child { border-bottom: none; }
+        .team-member-item img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .team-member-info strong { display: block; color: #333; }
+        .team-member-info span { font-size: 0.85rem; color: #6c757d; }
+        .team-member-status { margin-left: auto; color: #28a745; font-size: 1.5rem; } /* Pourrait être utilisé pour l'état d'activité, si applicable */
+        .team-member-status.offline { color: #dc3545; }
+        .btn-update-profile {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 2px rgba(0,123,255,.2);
+        }
+        .btn-update-profile:hover {
+            background-color: #0056b3;
+            color: #fff;
+            box-shadow: 0 4px 4px rgba(0,123,255,.3);
+        }
+        .activate-windows { text-align: right; margin-top: 20px; color: #6c757d; font-size: 0.9rem; }
+        .activate-windows a { color: #007bff; text-decoration: none; }
+
+        /* Styles pour les cartes de forums et annonces */
+        .card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 1.25rem 1.5rem;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .card-header h5 {
+            margin-bottom: 0;
+            color: #333;
+        }
+        .list-group-item {
+            padding: 1rem 1.5rem;
+            border-color: #eee;
+        }
+        .alert {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="sidebar">
+            <div class="logo">
+                CREATIVE TIM
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" id="link-user-profile" data-target="user-profile-content">
+                        <i class="fas fa-user"></i> ÉTUDIANTS
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="link-forums" data-target="forums-content">
+                        <i class="fas fa-comments"></i> FORUMS
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="link-annonces" data-target="annonces-content">
+                        <i class="fas fa-bullhorn"></i> ANNONCES
+                    </a>
+                </li>
+            </ul>
+            <div class="upgrade-pro">
+                <a href="#" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-arrow-up"></i> UPGRADE TO PRO
+                </a>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1" id="page-title">Étudiants</span>
+                    <div class="d-flex align-items-center ms-auto">
+                        <ul class="navbar-nav flex-row">
+                            <li class="nav-item me-3">
+                                <a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Stats</a>
+                            </li>
+                            <li class="nav-item dropdown me-3">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownNotifications" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bell"></i> 5 Notifications
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownNotifications">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Autre action</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Quelque chose d'autre ici</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSettings" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-cog"></i> Settings
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownSettings">
+                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Déconnexion</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div id="dynamic-content-wrapper">
+                <div id="user-profile-content" class="content-section active-content">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="profile-card">
+                                <div id="profile-header-bg" style="background-image: url('https://via.placeholder.com/600x120/5a5a5a/cccccc?text=Fonds+profil');"></div>
+                                <img src="" alt="Photo de profil" id="profile-image">
+                                <h4 id="profile-name"></h4>
+                                <p class="username" id="profile-matricule"></p> <p class="quote" id="profile-quote">Informations générales de l'étudiant.</p>
+                                <div class="profile-stats">
+                                    <div><div class="value" id="stats-filiere-value"></div><div class="label" id="stats-filiere-label">Filière</div></div>
+                                    <div><div class="value" id="stats-annee-value"></div><div class="label" id="stats-annee-label">Année</div></div>
+                                    <div><div class="value" id="stats-niveau-value"></div><div class="label" id="stats-niveau-label">Niveau</div></div>
+                                    <div><a class="btn btn-danger">Supprimer</a></div>
+                                </div>
+                            </div>
+
+                            <div class="team-members-card">
+                                <h5>Liste des Étudiants</h5>
+                                <div id="etudiants-list">
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8 col-md-6 mb-4">
+                            <div class="form-card">
+                                <div class="card-header-custom">
+                                    <h5>Modifier les informations de l'étudiant</h5>
+                                    </div>
+                                <form id="etudiant-edit-form" class="mt-4">
+                                    <input type="hidden" id="form-matricule" name="matricule">
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="form-nom" class="form-label">Nom</label>
+                                            <input type="text" class="form-control" id="form-nom" name="nom">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="form-prenom" class="form-label">Prénom</label>
+                                            <input type="text" class="form-control" id="form-prenom" name="prenom">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="form-annee" class="form-label">Année d'inscription</label>
+                                            <input type="text" class="form-control" id="form-annee" name="annee">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="form-niveau" class="form-label">Niveau</label>
+                                            <input type="text" class="form-control" id="form-niveau" name="niveau">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="form-filiere" class="form-label">Filière</label>
+                                            <input type="text" class="form-control" id="form-filiere" name="filiere">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="display-matricule" class="form-label">Matricule</label>
+                                        <input type="text" class="form-control" id="display-matricule" readonly>
+                                    </div>
+
+
+                                    <button type="submit" class="btn btn-update-profile">Mettre à jour les informations</button>
+                                </form>
+                            </div>
+
+                        </div>
+                        <a class="btn btn-success">Ajouter un nouvel Etudiant</a>
+                    </div>
+                </div>
+
+                <div id="forums-content" class="content-section">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Derniers Sujets des Forums</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Comment démarrer avec Bootstrap 5 ?
+                                            <span class="badge bg-primary rounded-pill">14 réponses</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Problèmes de responsive design
+                                            <span class="badge bg-primary rounded-pill">8 réponses</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Intégration de l'API Google Maps
+                                            <span class="badge bg-primary rounded-pill">21 réponses</span>
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-info mt-3">Voir tous les forums</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="annonces-content" class="content-section">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Nos dernières Annonces</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-info" role="alert">
+                                        Nouvelle mise à jour du dashboard disponible !
+                                    </div>
+                                    <div class="alert alert-success" role="alert">
+                                        Promotion spéciale sur les forfaits Pro ce mois-ci.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // URLs des APIs Django (rendues dynamiquement par le template Django)
+// Assurez-vous que ces URLs sont correctement définies dans votre urls.py
+// et que le template est rendu par une vue Django pour que url fonctionne.
+const API_ETUDIANTS_LIST_URL = "{% url 'etudiants_list_api' %}";
+const API_ETUDIANTS_DETAIL_URL = "{% url 'etudiant_detail_api' matricule='_MATRICULE_' %}"; // Placeholder pour le matricule
+const API_ETUDIANTS_UPDATE_URL = "{% url 'etudiant_update_api' matricule='_MATRICULE_' %}"; // Placeholder pour le matricule
+
+// URL pour l'image de profil par défaut, gérée par Django's staticfiles
+const DEFAULT_PROFILE_IMAGE_URL = "{% static 'geinfo/img/user.jpg' %}";
+
+let currentEtudiantsData = []; // Pour stocker les données des étudiants récupérées une fois
+
+// --- FONCTIONS GENERALES DE CHARGEMENT DE CONTENU ---
+
+/**
+ * Charge le contenu de la section spécifiée et met à jour la navigation.
+ * @param {string} targetId L'ID de la section de contenu à afficher (ex: 'user-profile-content').
+ */
+function loadContent(targetId) {
+    // 1. Gérer les classes 'active' dans la sidebar
+    const allNavLinks = document.querySelectorAll('.sidebar .nav-link');
+    allNavLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+
+    const activeLink = document.querySelector(`.sidebar .nav-link[data-target="${targetId}"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+
+    // 2. Afficher/Masquer les sections de contenu
+    const allContentSections = document.querySelectorAll('.content-section');
+    allContentSections.forEach(section => {
+        section.classList.remove('active-content');
+    });
+
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+        targetSection.classList.add('active-content');
+    }
+
+    // 3. Mettre à jour le titre de la page dans la navbar
+    const pageTitle = document.getElementById('page-title');
+    const formattedTitle = targetId
+                            .replace(/-content$/, '')
+                            .replace(/-/g, ' ')
+                            .toUpperCase();
+    pageTitle.textContent = formattedTitle;
+
+    // Logique spécifique à la section "User Profile" (Étudiants)
+    if (targetId === 'user-profile-content') {
+        fetchEtudiantsAndDisplay(); // Charge les étudiants depuis l'API et les affiche
+    }
+}
+
+// --- FONCTIONS SPÉCIFIQUES AUX ÉTUDIANTS ---
+
+/**
+ * Récupère la liste de tous les étudiants depuis l'API Django,
+ * peuple la liste latérale et affiche le premier étudiant.
+ */
+async function fetchEtudiantsAndDisplay() {
+    try {
+        const response = await fetch(API_ETUDIANTS_LIST_URL);
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP! statut: ${response.status}`);
+        }
+        const etudiants = await response.json();
+        currentEtudiantsData = etudiants; // Stocke les données pour un accès facile sans refetch
+
+        populateEtudiantsList(etudiants);
+
+        // Affiche le premier étudiant par défaut si la liste n'est pas vide
+        if (etudiants.length > 0) {
+            displayEtudiantProfile(etudiants[0].matricule);
+        } else {
+            // Gérer le cas où il n'y a pas d'étudiants
+            document.getElementById('profile-name').textContent = "Aucun étudiant trouvé.";
+            document.getElementById('profile-matricule').textContent = "";
+            document.getElementById('profile-image').src = DEFAULT_PROFILE_IMAGE_URL;
+            document.getElementById('profile-header-bg').style.backgroundImage = "url('https://via.placeholder.com/600x120/f0f0f0/cccccc?text=Fonds+par+défaut')"; // Fond générique
+
+            // Vider les champs du formulaire et des statistiques
+            document.getElementById('stats-filiere-value').textContent = "";
+            document.getElementById('stats-annee-value').textContent = "";
+            document.getElementById('stats-niveau-value').textContent = "";
+            document.getElementById('form-matricule').value = "";
+            document.getElementById('display-matricule').value = "";
+            document.getElementById('form-nom').value = "";
+            document.getElementById('form-prenom').value = "";
+            document.getElementById('form-annee').value = "";
+            document.getElementById('form-niveau').value = "";
+            document.getElementById('form-filiere').value = "";
+        }
+
+    } catch (error) {
+        console.error("Erreur lors de la récupération des étudiants:", error);
+        alert("Impossible de charger la liste des étudiants. Veuillez réessayer.");
+    }
+}
+
+/**
+ * Peuple la liste des étudiants dans la barre latérale gauche.
+ * @param {Array<Object>} etudiants Le tableau d'objets étudiants à afficher.
+ */
+function populateEtudiantsList(etudiants) {
+    const etudiantsListDiv = document.getElementById('etudiants-list');
+    if (!etudiantsListDiv) return;
+
+    etudiantsListDiv.innerHTML = ''; // Vider la liste avant de la repeupler
+
+    etudiants.forEach(etudiant => {
+        const etudiantItem = document.createElement('div');
+        etudiantItem.className = 'team-member-item';
+        etudiantItem.dataset.matricule = etudiant.matricule; // Utiliser le matricule comme ID
+
+        // L'URL `etudiant.profil` vient déjà de l'API avec le chemin complet géré par Django
+        const profileImageUrl = etudiant.profil || DEFAULT_PROFILE_IMAGE_URL;
+
+        etudiantItem.innerHTML = `
+            <img src="${profileImageUrl}" alt="${etudiant.nom} ${etudiant.prenom}">
+            <div class="team-member-info">
+                <strong>${etudiant.nom} ${etudiant.prenom}</strong>
+                <span>${etudiant.filiere} - Année ${etudiant.annee}</span>
+            </div>
+            `;
+
+        etudiantsListDiv.appendChild(etudiantItem);
+
+        // Ajouter l'écouteur d'événements pour chaque étudiant
+        etudiantItem.addEventListener('click', () => {
+            displayEtudiantProfile(etudiant.matricule);
+        });
+    });
+}
+
+/**
+ * Affiche les détails d'un étudiant spécifique dans la carte de profil
+ * et le formulaire de modification.
+ * @param {string} matricule Le matricule de l'étudiant à afficher.
+ */
+async function displayEtudiantProfile(matricule) {
+    try {
+        // Tente de trouver l'étudiant dans les données déjà chargées pour éviter un appel API supplémentaire
+        const etudiant = currentEtudiantsData.find(e => e.matricule === matricule);
+
+        if (!etudiant) {
+            // Si l'étudiant n'est pas dans la liste (ex: chargement direct ou données anciennes),
+            // le récupérer spécifiquement via l'API de détail.
+            const response = await fetch(API_ETUDIANTS_DETAIL_URL.replace('_MATRICULE_', matricule));
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP! statut: ${response.status}`);
+            }
+            const etudiantDetail = await response.json();
+            updateProfileUI(etudiantDetail); // Mettre à jour l'UI avec les données complètes
+        } else {
+            updateProfileUI(etudiant); // Mettre à jour l'UI avec les données déjà disponibles
+        }
+
+        // Gérer la classe 'active' sur l'élément de la liste pour visuellement indiquer l'étudiant sélectionné
+        const allEtudiantItems = document.querySelectorAll('#etudiants-list .team-member-item');
+        allEtudiantItems.forEach(item => {
+            item.classList.remove('active');
+        });
+        const activeEtudiantItem = document.querySelector(`#etudiants-list .team-member-item[data-matricule="${matricule}"]`);
+        if (activeEtudiantItem) {
+            activeEtudiantItem.classList.add('active');
+        }
+
+    } catch (error) {
+        console.error("Erreur lors de l'affichage du profil étudiant:", error);
+        alert("Impossible de charger les détails de l'étudiant. Veuillez réessayer.");
+    }
+}
+
+/**
+ * Met à jour les éléments de l'interface utilisateur (carte de profil et formulaire)
+ * avec les données de l'étudiant.
+ * @param {Object} etudiant L'objet étudiant contenant les informations à afficher.
+ */
+function updateProfileUI(etudiant) {
+    // Mettre à jour la Profile Card
+    // Utilisez un fond générique ou une image de fond spécifique si vous avez un champ pour cela
+    document.getElementById('profile-header-bg').style.backgroundImage = `url('https://via.placeholder.com/600x120/5a5a5a/cccccc?text=Fonds+profil')`;
+    document.getElementById('profile-image').src = etudiant.profil || DEFAULT_PROFILE_IMAGE_URL; // Utilise l'URL du profil ou l'URL par défaut
+    document.getElementById('profile-image').alt = `${etudiant.nom} ${etudiant.prenom}`;
+    document.getElementById('profile-name').textContent = `${etudiant.nom} ${etudiant.prenom}`;
+    document.getElementById('profile-matricule').textContent = `Matricule: ${etudiant.matricule}`;
+    document.getElementById('profile-quote').textContent = "Informations générales de l'étudiant."; // Citation générique
+
+    // Mettre à jour les statistiques
+    document.getElementById('stats-filiere-value').textContent = etudiant.filiere;
+    document.getElementById('stats-annee-value').textContent = etudiant.annee;
+    document.getElementById('stats-niveau-value').textContent = etudiant.niveau;
+
+    // Mettre à jour le Formulaire de Modification
+    document.getElementById('form-matricule').value = etudiant.matricule; // Champ caché pour l'ID
+    document.getElementById('display-matricule').value = etudiant.matricule; // Champ affiché mais non modifiable
+    document.getElementById('form-nom').value = etudiant.nom;
+    document.getElementById('form-prenom').value = etudiant.prenom;
+    document.getElementById('form-annee').value = etudiant.annee;
+    document.getElementById('form-niveau').value = etudiant.niveau;
+    document.getElementById('form-filiere').value = etudiant.filiere;
+}
+
+/**
+ * Gère la soumission du formulaire de modification des informations de l'étudiant.
+ * Envoie les données mises à jour à l'API Django.
+ * @param {Event} event L'objet événement de soumission du formulaire.
+ */
+async function submitEtudiantForm(event) {
+    event.preventDefault(); // Empêche le rechargement de la page par défaut
+
+    const matriculeToUpdate = document.getElementById('form-matricule').value;
+    const url = API_ETUDIANTS_UPDATE_URL.replace('_MATRICULE_', matriculeToUpdate);
+
+    const formData = {
+        nom: document.getElementById('form-nom').value,
+        prenom: document.getElementById('form-prenom').value,
+        annee: document.getElementById('form-annee').value,
+        niveau: document.getElementById('form-niveau').value,
+        filiere: document.getElementById('form-filiere').value,
+        // N'envoyez PAS le mot de passe ni le chemin du profil via ce formulaire de mise à jour simple.
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // Indispensable pour les requêtes POST/PUT/DELETE dans Django
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            // Tenter de lire le message d'erreur de Django en cas d'échec
+            const errorData = await response.json();
+            throw new Error(`Erreur HTTP! statut: ${response.status} - ${errorData.error || response.statusText}`);
+        }
+
+        const result = await response.json();
+        alert(result.message); // Afficher le message de succès de Django
+
+        // Recharger les données des étudiants pour refléter les changements
+        // et réafficher le profil mis à jour
+        fetchEtudiantsAndDisplay();
+        displayEtudiantProfile(matriculeToUpdate);
+
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de l'étudiant:", error);
+        alert("Échec de la mise à jour: " + error.message + ". Veuillez vérifier la console.");
+    }
+}
+
+/**
+ * Fonction utilitaire pour récupérer le jeton CSRF des cookies.
+ * Nécessaire pour les requêtes POST, PUT, DELETE dans Django.
+ * @param {string} name Le nom du cookie (généralement 'csrftoken').
+ * @returns {string|null} Le jeton CSRF ou null si non trouvé.
+ */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// --- INITIALISATION AU CHARGEMENT DE LA PAGE ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Attacher les écouteurs d'événements aux liens de la sidebar
+    const navLinks = document.querySelectorAll('.sidebar .nav-link[data-target]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault(); // Empêche le comportement par défaut du lien
+            const targetId = link.dataset.target; // Récupère la valeur de data-target
+            loadContent(targetId);
+        });
+    });
+
+    // Attacher l'écouteur d'événements pour la soumission du formulaire de modification
+    const etudiantEditForm = document.getElementById('etudiant-edit-form');
+    if (etudiantEditForm) {
+        etudiantEditForm.addEventListener('submit', submitEtudiantForm);
+    }
+
+    // Charger la section "Étudiants" par défaut au chargement de la page
+    // Cela appellera fetchEtudiantsAndDisplay() qui à son tour peuple la liste et affiche le premier étudiant.
+    loadContent('user-profile-content');
+});
+    </script>
+</body>
+</html>
