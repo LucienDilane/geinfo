@@ -1,5 +1,6 @@
 from django.db import models
 
+from Etudiants.models import Etudiant
 
 
 # Create your models here.
@@ -15,6 +16,7 @@ class Forum(models.Model):
         blank=True,
         verbose_name="createur_forum"
     )
+    membres = models.ManyToManyField(Etudiant, related_name='forums_rejoints', blank=True)
 
     class Meta:
         verbose_name = "Forum"
@@ -24,3 +26,7 @@ class Forum(models.Model):
     def __str__(self):
         creator_name = self.createur.get_full_name() if self.createur else "Inconnu"
         return f"{self.nom} (Créé par: {creator_name})"
+
+    @property
+    def nombre_membres(self):
+        return self.membres.count()

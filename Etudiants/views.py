@@ -4,12 +4,12 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate
 from django.contrib.auth import login, update_session_auth_hash
 from datetime import timedelta
 import os
 
-
-from .forms import LoginForm,ModifierPhotoProfilForm,ChangerMotDePasseForm
+from .forms import LoginForm, ModifierPhotoProfilForm,ChangerMotDePasseForm
 from chat.models import Message
 from .models import Etudiant
 
@@ -20,16 +20,16 @@ def connexion_etudiant(request):
         if form.is_valid():
             user = form.cleaned_data['user']
             login(request, user)
-            if request.POST.get('remember_me'):
-                # Définir une durée de vie de session plus longue (par exemple, 2 semaines)
+
+            if request.POST.get('remember_me'):  # La case à cocher "remember_me" n'est pas dans votre HTML fourni, mais si vous l'ajoutez plus tard, ce code fonctionnera.
                 request.session.set_expiry(timedelta(weeks=2))
             else:
-                # Définir une durée de vie de session par défaut (fermeture du navigateur)
                 request.session.set_expiry(0)
-            # Rediriger l'utilisateur après la connexion
-            return redirect('profil')
+
+            return redirect('profil')  # Assurez-vous que l'URL 'profil' est bien configurée sans arguments si elle n'en prend pas.
     else:
         form = LoginForm()
+
     return render(request, 'Etudiants/connexion.html', {'form': form})
 @login_required  # S'assurer que l'utilisateur est connecté pour voir son profil
 def profil(request):

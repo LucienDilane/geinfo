@@ -1,19 +1,82 @@
 {% extends 'base.html' %}
-
+{% block btn%} <span></span>{% endblock %}
 {% block content %}
   <div class="container mt-5">
-    <h2>Liste des Contacts</h2>
+    <h2 class="mb-4 text-center">Liste des Contacts</h2>
+
+    <div class="row mb-4 justify-content-center">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un contact..." aria-label="Rechercher un contact">
+          <button class="btn btn-primary" type="button" id="searchButton">Rechercher</button>
+        </div>
+      </div>
+    </div>
+
     {% if contacts %}
-      <ul class="list-group">
-        {% for contact in contacts %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-             {{ contact.nom }}<sub>{{contact.filiere}} {{contact.niveau}}</sub>
-            <a href="{% url 'chat_view' contact.id %}" class="btn btn-primary btn-sm">Discuter</a>
-          </li>
-        {% endfor %}
-      </ul>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="list-group shadow-sm" id="contactList">
+            {% for contact in contacts %}
+              <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action py-3">
+                <div>
+                  <h5 class="mb-1">{{ contact.nom }}</h5>
+                  <small class="text-muted">{{ contact.filiere }} {{ contact.niveau }}</small>
+                </div>
+                <a href="{% url 'chat_view' contact.id %}" class="btn btn-outline-primary btn-sm">Discuter</a>
+              </li>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     {% else %}
-      <p>Aucun contact disponible.</p>
+      <p class="text-center mt-4">Aucun contact disponible.</p>
     {% endif %}
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Script de recherche chargé et DOM prêt !'); // <-- AJOUTEZ CETTE LIGNE
+
+      const searchInput = document.getElementById('searchInput');
+      const contactList = document.getElementById('contactList');
+      const contactItems = contactList.getElementsByTagName('li');
+
+      // Vérifier si les éléments ont été trouvés
+      if (!searchInput) { console.error("searchInput non trouvé !"); }
+      if (!contactList) { console.error("contactList non trouvé !"); }
+      if (contactItems.length === 0) { console.warn("Aucun élément de contact trouvé dans la liste !"); }
+
+
+      function filterContacts() {
+    console.log('Fonction filterContacts appelée.');
+    const searchTerm = searchInput.value.toUpperCase();
+
+    for (let i = 0; i < contactItems.length; i++) {
+        const contactName = contactItems[i].querySelector('h5').textContent.toUpperCase();
+        const contactDetails = contactItems[i].querySelector('small').textContent.toUpperCase();
+
+        if (contactName.includes(searchTerm) || contactDetails.includes(searchTerm)) {
+            // Afficher l'élément
+            contactItems[i].style.display = 'flex'; // Revenir au display par défaut de Bootstrap list-group-item
+            contactItems[i].style.opacity = '1';
+            contactItems[i].style.visibility = 'visible';
+            contactItems[i].style.height = 'auto'; // Assurez-vous que la hauteur n'est pas zéro
+            contactItems[i].style.padding = '12px 15px'; // Réinitialiser le padding si besoin (py-3 = 12px vertical)
+        } else {
+            // Masquer l'élément de manière agressive
+            contactItems[i].style.display = 'none'; // Le plus important
+            contactItems[i].style.opacity = '0'; // Le rendre transparent
+            contactItems[i].style.visibility = 'hidden'; // Le cacher sans retirer l'espace
+            contactItems[i].style.height = '0'; // Réduire sa hauteur à zéro
+            contactItems[i].style.padding = '0'; // Supprimer le padding pour qu'il prenne moins d'espace
+        }
+    }
+}
+      if (searchInput && contactList) { // S'assurer que les éléments existent avant d'ajouter les écouteurs
+          searchInput.addEventListener('keyup', filterContacts);
+          document.getElementById('searchButton').addEventListener('click', filterContacts);
+      }
+    });
+  </script>
 {% endblock %}

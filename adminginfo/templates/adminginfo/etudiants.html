@@ -1,0 +1,106 @@
+ {% load static %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm rounded-lg">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Liste des Étudiants</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="etudiants-list" class="list-group list-group-flush">
+                                    <div class="p-3 text-center text-muted">Chargement des étudiants...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="profile-card mb-4">
+                            <div class="profile-header-bg" id="profile-header-bg"></div>
+                            <div class="profile-image-container">
+                                <img src="" alt="Photo de profil" class="profile-image" id="profile-image">
+                            </div>
+                            <div class="text-center mt-3">
+                                <h3 class="profile-name" id="profile-name"></h3>
+                                <p class="profile-matricule" id="profile-matricule"></p>
+                                <p class="profile-quote" id="profile-quote"></p>
+                            </div>
+                            <div class="profile-stats">
+                                <div>
+                                    <div class="value" id="stats-filiere-value"></div>
+                                    <div class="label">Filière</div>
+                                </div>
+                                <div>
+                                    <div class="value" id="stats-annee-value"></div>
+                                    <div class="label">Année</div>
+                                </div>
+                                <div>
+                                    <div class="value" id="stats-niveau-value"></div>
+                                    <div class="label">Niveau</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card p-3 shadow-sm rounded-lg mb-4">
+                            <h5 class="text-primary mb-3">Modifier les informations de l'étudiant</h5>
+                            <form id="etudiant-edit-form">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="display-matricule" class="form-label">Matricule</label>
+                                        <input type="text" class="form-control" id="display-matricule" required>
+                                        <input type="hidden" id="form-id"> </div>
+                                    <div class="col-md-6">
+                                        <label for="form-nom" class="form-label">Nom</label>
+                                        <input type="text" class="form-control" id="form-nom" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="form-prenom" class="form-label">Prénom</label>
+                                        <input type="text" class="form-control" id="form-prenom" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="form-filiere" class="form-label">Filière</label>
+                                        <input type="text" class="form-control" id="form-filiere" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="form-annee" class="form-label">Année</label>
+                                        <input type="number" class="form-control" id="form-annee" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="form-niveau" class="form-label">Niveau</label>
+                                        <input type="text" class="form-control" id="form-niveau" required>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                                    <button type="button" class="btn btn-danger" id="delete-etudiant-btn">Supprimer l'étudiant</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="card p-3 shadow-sm rounded-lg">
+                            <h5 class="text-primary mb-3">Forums de l'étudiant sélectionné</h5>
+                            <div id="student-forums-list" class="list-group">
+                                </div>
+                            <p id="no-forums-message" class="text-muted text-center mt-3" style="display: none;">
+                                Cet étudiant n'est membre d'aucun forum actuellement.
+                            </p>
+                            <div class="d-grid gap-2 mt-3">
+                                <a href="{% url 'register' %}" class="btn btn-success" type="button">
+                                    Enregistrer un étudiant
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+    <script>
+        const API_ETUDIANTS_LIST_URL = "{% url 'etudiants_list_api' %}";
+        // REMARQUE : Il n'y a plus de template d'URL ici. Nous allons générer l'URL complète dans JS.
+        const API_CREATE_FORUM_URL = "{% url 'create_forum_api' %}";
+        const DEFAULT_PROFILE_IMAGE_URL = "{% static 'geinfo/img/user.jpg' %}";
+        const LOGOUT_URL = "{% url 'logout' %}";
+    </script>

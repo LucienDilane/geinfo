@@ -8,6 +8,7 @@ from django.templatetags.static import static
 import json
 
 from Etudiants.models import Etudiant
+from forum.models import Forum
 
 
 
@@ -30,7 +31,7 @@ def error_404(request, exception):
 
 def register(request):
     # Le code de vue protégée ici
-    return render(request,'adminginfo/enregistrer.html',{"yes":"yep"})
+    return render(request,'adminginfo/enregistrer.html')
 
 
 def admin(request):
@@ -57,26 +58,47 @@ def get_profile_url(profile_filename):
         return static(static_path)
     return static("geinfo/img/user.jpg") # Chemin vers votre image de profil par défaut
 
+def forum_profil_url(forum_profil):
+    if forum_profil:
+        static_path=f"geinfo/img/forums/{forum_profil}"
+        return static(static_path)
+    return static("geinfo/img/user.jpg")
+
 # Vue API pour lister tous les étudiants
+@csrf_exempt
 def etudiants_list_api(request):
-    etudiants_queryset = Etudiant.objects.all()
-    data = []
-    for etudiant in etudiants_queryset:
-        data.append({
+    if request.method == 'GET':
+        etudiants = Etudiant.objects.all()
+        data = [{
+            'id': etudiant.id,  # <-- Assurez-vous que ceci est présent et correct
             'matricule': etudiant.matricule,
             'nom': etudiant.nom,
             'prenom': etudiant.prenom,
             'filiere': etudiant.filiere,
             'annee': etudiant.annee,
             'niveau': etudiant.niveau,
-            'profil': get_profile_url(etudiant.profil), # Utiliser la fonction utilitaire
-        })
-    return JsonResponse(data, safe=False)
+            'profil': get_profile_url(etudiant.profil) if etudiant.profil else ''
+        } for etudiant in etudiants]
+        return JsonResponse(data, safe=False)
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 
 # Vue API pour obtenir les détails d'un seul étudiant
-def etudiant_detail_api(request, matricule):
-    etudiant = get_object_or_404(Etudiant, matricule=matricule)
+def etudiant_detail_api(request, id):
+    etudiant = get_object_or_404(Etudiant, id=id)
+
+
+    forums_data = []
+    for forum in etudiant.forums.all(): # Accéder aux forums via le related_name 'forums' de Etudiant
+        forums_data.append({
+            'id': forum.id,
+            'nom': forum.nom,
+            'description': forum.description,
+            'profil': forum_profil_url(forum.profil),
+            'createur_nom': forum.createur.get_full_name() if forum.createur else "N/A" # Nom du créateur
+        })
+
     data = {
+        'id':etudiant.id,
         'matricule': etudiant.matricule,
         'nom': etudiant.nom,
         'prenom': etudiant.prenom,
@@ -84,30 +106,86 @@ def etudiant_detail_api(request, matricule):
         'niveau': etudiant.niveau,
         'filiere': etudiant.filiere,
         'profil': get_profile_url(etudiant.profil), # Utiliser la fonction utilitaire
+        'forums': forums_data,  # Inclut les détails des forums
         # Excluez le mot de passe ici
     }
     return JsonResponse(data)
 
 # Vue API pour mettre à jour les informations d'un étudiant (aucun changement ici pour le profil)
 @csrf_exempt
-def etudiant_update_api(request, matricule):
-    if request.method == 'POST':
-        etudiant = get_object_or_404(Etudiant, matricule=matricule)
+def etudiant_detail_update_delete_api(request, id): # Accepte 'id'
+    etudiant = get_object_or_404(Etudiant, id=id) # Utilise id pour la recherche
+
+    if request.method == 'GET':
+        data = {
+            'id': etudiant.id, # Assurez-vous d'inclure l'ID dans la réponse
+            'matricule': etudiant.matricule, # Le matricule reste affiché
+            'nom': etudiant.nom,
+            'prenom': etudiant.prenom,
+            'filiere': etudiant.filiere,
+            'annee': etudiant.annee,
+            'niveau': etudiant.niveau,
+            'profil': etudiant.profil.url if etudiant.profil else '',
+            'forums': [{'id': f.id, 'nom': f.nom, 'description': f.description, 'createur_nom': f.createur.nom + ' ' + f.createur.prenom if hasattr(f, 'createur') and f.createur else 'N/A'} for f in etudiant.forums.all()]
+        }
+        return JsonResponse(data)
+
+    elif request.method == 'PUT':
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+            return JsonResponse({"error": "Données JSON invalides"}, status=400)
 
         etudiant.nom = data.get('nom', etudiant.nom)
         etudiant.prenom = data.get('prenom', etudiant.prenom)
+        etudiant.filiere = data.get('filiere', etudiant.filiere)
         etudiant.annee = data.get('annee', etudiant.annee)
         etudiant.niveau = data.get('niveau', etudiant.niveau)
-        etudiant.filiere = data.get('filiere', etudiant.filiere)
-
+        etudiant.matricule=data.get('matricule', etudiant.matricule)
+        # Ne pas modifier l'ID via cette API si ce sont des identifiants métier stables
         etudiant.save()
-        return JsonResponse({'message': 'Etudiant mis à jour avec succès', 'matricule': etudiant.matricule})
-    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+        return JsonResponse({"message": "Étudiant mis à jour avec succès !"})
 
+    elif request.method == 'DELETE':
+        etudiant.delete()
+        return JsonResponse({"message": "Étudiant supprimé avec succès !"}, status=204)
+
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
+
+
+@csrf_exempt
+def create_forum_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Données JSON invalides"}, status=400)
+
+        nom = data.get('nom')
+        description = data.get('description')
+        createur_id = data.get('createur_id') # Récupère l'ID du créateur
+
+        if not nom:
+            return JsonResponse({"error": "Le nom du forum est requis."}, status=400)
+
+        forum = Forum(nom=nom, description=description)
+
+        if createur_id:
+            try:
+                createur_etudiant = Etudiant.objects.get(id=createur_id) # Recherche par ID
+                forum.createur = createur_etudiant # Assigner l'objet Etudiant
+            except Etudiant.DoesNotExist:
+                return JsonResponse({"error": "L'ID du créateur spécifié n'existe pas."}, status=400)
+
+        forum.save() # Sauvegarde le forum
+
+        # Si vous avez un ManyToManyField 'membres', ajoutez le créateur
+        if createur_id and hasattr(forum, 'membres'):
+             forum.membres.add(createur_etudiant)
+
+
+        return JsonResponse({"message": "Forum créé avec succès!", "id": forum.id, "nom": forum.nom}, status=201)
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 def enregistrement_etudiant(request):
     if request.method == 'POST':
         matricule = request.POST.get('matricule')
@@ -158,9 +236,6 @@ def delete(request,id):
     etudiant.delete()
     return redirect("interface")
 
-def modifier_etudiant(request,id):
-    etudiant=get_object_or_404(Etudiant,id=id)
-    return render(request,"geinfo/modifier.html",{"etudiant":etudiant})
 
 def verif(filiere):
     fililieres=("Licence 1", "Licence 2", "Licence 3","Master 1", "Master 2")
@@ -213,3 +288,59 @@ def update(request,id):
         # Si la requête n'est pas POST, afficher le formulaire HTML
 
         return render(request, 'geinfo/modifier.html',{"etudiant":etudiant})
+
+# Nouvelle Vue API pour créer un forum
+@csrf_exempt
+def create_forum_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nom = data.get('nom')
+            description = data.get('description')
+            # Le créateur sera l'étudiant actuellement sélectionné ou connecté.
+            # Pour l'exemple, nous allons le lier à l'étudiant actuellement affiché.
+            # Dans un vrai système, ce serait l'utilisateur connecté (request.user).
+            matricule_createur = data.get('createur_matricule') # Envoyé depuis le frontend
+
+            if not nom:
+                return JsonResponse({'error': 'Le nom du forum est obligatoire.'}, status=400)
+
+            try:
+                # Tente de trouver l'étudiant créateur par son matricule
+                createur_etudiant = None
+                if matricule_createur:
+                    createur_etudiant = get_object_or_404(Etudiant, matricule=matricule_createur)
+
+                forum = Forum.objects.create(
+                    nom=nom,
+                    description=description,
+                    createur=createur_etudiant
+                )
+                return JsonResponse({'message': 'Forum créé avec succès !', 'id': forum.id, 'nom': forum.nom}, status=201)
+            except Exception as e:
+                return JsonResponse({'error': f'Erreur lors de la création du forum: {str(e)}'}, status=500)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Données JSON invalides.'}, status=400)
+    return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
+
+
+# Vue API pour mettre à jour les informations d'un étudiant (inchangée pour cette tâche)
+@csrf_exempt
+def etudiant_update_api(request, matricule):
+    if request.method == 'POST':
+        etudiant = get_object_or_404(Etudiant, matricule=matricule)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        etudiant.nom = data.get('nom', etudiant.nom)
+        etudiant.prenom = data.get('prenom', etudiant.prenom)
+        etudiant.annee = data.get('annee', etudiant.annee)
+        etudiant.niveau = data.get('niveau', etudiant.niveau)
+        etudiant.filiere = data.get('filiere', etudiant.filiere)
+
+        etudiant.save()
+        return JsonResponse({'message': 'Etudiant mis à jour avec succès', 'matricule': etudiant.matricule})
+    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)

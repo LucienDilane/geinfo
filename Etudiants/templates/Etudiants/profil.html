@@ -1,88 +1,313 @@
 {% extends "base.html" %}
+{% load static %} {# N'oubliez pas cette ligne pour utiliser {% static %} #}
 
-{% load static %}
+{% block title %}Mon Profil{% endblock %}
 
-{% block title %} mon profil {%endblock%}
+{% block head_extra %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            /* Un arrière-plan dégradé plus doux et moderne, ou une image de fond subtile */
+            background: linear-gradient(to right bottom, #E0F2F7, #B0E0E6, #87CEEB); /* Des bleus clairs doux */
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh; /* S'assure que le dégradé couvre toute la hauteur */
+            display: flex;
+            flex-direction: column; /* Pour organiser le contenu en colonne */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-{% block rel %}{% static 'geinfo/css/profil.css' %}{% endblock rel %}
+        /* Masquer le header et le footer de base.html si cette page doit être full-width / immersive */
+        header, footer {
+            display: none !important;
+        }
 
-{% block nav %}
-    <li class="nav-item">
-    <a class="nav-link" aria-current="page" href="#">Groupe <i class="bi bi-people"></i></a>
-    </li>
+        .container-fluid-custom {
+            flex-grow: 1; /* Permet au conteneur de prendre l'espace restant */
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* Espace entre les blocs principaux */
+        }
 
-    <li class="nav-item">
-        <a class="nav-link" aria-current="page" href="{% url 'profil' %}">Mon profil</a>
-    </li>
+        h2 {
+            color: #2c3e50; /* Couleur de titre plus foncée */
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
 
-    <li class="nav-item">
-    <a class="nav-link" aria-current="page" href="{% url 'etudiants' %}">Message<i class="bi bi-envelope"></i> </a>
-    </li>
+        /* Styles pour les "cartes" d'information */
+        .custom-card {
+            background-color: rgba(255, 255, 255, 0.7); /* Fond blanc semi-transparent */
+            backdrop-filter: blur(8px); /* Effet de flou derrière la carte */
+            border-radius: 20px; /* Coins plus arrondis */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); /* Ombre plus douce */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure légère */
+            padding: 25px;
+            color: #333;
+        }
 
-    <li class="nav-item">
-        <a class="nav-link" aria-current="page" href="#">Rechercher<i class="bi bi-search"></i></a>
-    </li>
-    {% endblock nav  %}
+        .custom-card .card-header {
+            background-color: rgba(255, 255, 255, 0.4); /* Header semi-transparent */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5); /* Séparateur subtil */
+            padding: 15px 25px;
+            margin: -25px -25px 25px -25px; /* Décalage pour recouvrir les bords */
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            color: #2c3e50; /* Couleur de titre de section */
+            font-weight: 600;
+            font-size: 1.3em;
+        }
 
-        {% block btn %}
-            {% if user.is_authenticated %}
-        <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %} {# C'est essentiel pour la sécurité ! #}
-                        <button type="submit" class="btn btn-danger">Déconnexion</button>
-                    </form>
-                    {% else %}
-                        <a href="{% url 'login' %}">Connexion</a>
-                    {% endif %}
-        {% endblock btn  %}
+        /* Styles pour les informations de profil */
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px; /* Espace entre les éléments d'information */
+        }
 
-                </div>
+        .profile-info img {
+            border: 4px solid rgba(255, 255, 255, 0.8); /* Bordure blanche épaisse pour la photo de profil */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Ombre légère pour la photo */
+            transition: transform 0.3s ease;
+        }
+        .profile-info img:hover {
+            transform: scale(1.05); /* Effet de zoom au survol */
+        }
 
+        .profile-info h5 {
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #007bff; /* Couleur plus vive pour le nom */
+            margin-bottom: 5px;
+        }
+        .profile-info p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 0;
+        }
+        .profile-info p.text-muted {
+            font-size: 0.95em;
+            color: #777;
+        }
 
+        .details-section {
+            padding-top: 20px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.1); /* Ligne pointillée douce */
+            margin-top: 20px;
+        }
+        .details-section h6 {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        .details-section .text-secondary {
+            color: #666 !important;
+            font-size: 1.05em;
+        }
 
+        /* Styles pour les boutons d'action */
+        .action-buttons .btn {
+            border-radius: 8px; /* Coins arrondis pour les boutons */
+            font-weight: 600;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .action-buttons .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+        .action-buttons .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+        }
+        .action-buttons .btn-info {
+            background-color: #17a2b8; /* Bleu-vert de Bootstrap */
+            border-color: #17a2b8;
+            box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
+        }
+        .action-buttons .btn-info:hover {
+            background-color: #117a8b;
+            border-color: #117a8b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(23, 162, 184, 0.4);
+        }
 
+        /* Styles pour les sections "Mes groupes" et "Conversations récentes" */
+        .col-md-6.custom-card { /* Applique la classe custom-card directement au col pour un style uniforme */
+            /* Pas besoin de card shadow-sm mb-4 ici car custom-card a déjà une ombre et une marge */
+        }
+
+        /* Styles pour les listes de groupes et conversations */
+        .list-group-flush {
+            margin: 0;
+            padding: 0;
+            list-style: none; /* Supprime les puces par défaut */
+        }
+        .list-group-item {
+            background-color: rgba(255, 255, 255, 0.6); /* Fond plus transparent pour les items */
+            border: none; /* Supprime les bordures des items pour un look plus doux */
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Séparateur très léger */
+        }
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-group-item img.profile-img { /* Style pour les images de groupe */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .list-group-item a.btn {
+            margin-left: auto; /* Bouton à droite */
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+        }
+        .list-group-item a.btn-success { /* Pour Créer un Forum */
+            background-color: #28a745;
+            border-color: #28a745;
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.2);
+        }
+        .list-group-item a.btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        /* Message "Vous n'appartenez à aucun groupe" ou "Aucune conversation" */
+        .text-muted-custom {
+            color: #666;
+            font-style: italic;
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* Boutons "Voir tous les groupes" et "Créer un Forum" */
+        .bottom-actions {
+            display: flex;
+            justify-content: center; /* Centre les boutons */
+            gap: 15px; /* Espace entre les boutons */
+            padding-top: 20px;
+            border-top: 1px dashed rgba(0,0,0,0.05);
+            margin-top: 15px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container-fluid-custom {
+                padding: 15px;
+                gap: 20px;
+            }
+            .custom-card {
+                padding: 20px;
+            }
+            .custom-card .card-header {
+                padding: 12px 20px;
+                font-size: 1.1em;
+            }
+            h2 {
+                font-size: 2em;
+                margin-bottom: 20px;
+            }
+            .profile-info h5 {
+                font-size: 1.4em;
+            }
+            .profile-info p {
+                font-size: 1em;
+            }
+            .details-section .text-secondary {
+                font-size: 1em;
+            }
+            .action-buttons .btn {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .bottom-actions {
+                flex-direction: column; /* Empile les boutons sur mobile */
+                align-items: center;
+                gap: 10px;
+            }
+            .bottom-actions .btn {
+                width: 90%; /* Prend plus de largeur */
+            }
+        }
+    </style>
+{% endblock %}
+ {% block nav %}
+<li><a href="{% url 'profil'%}"><i class="fas fa-user"></i>Profil</a> </li>
+<li><a href="#"><i class="fas fa-comments"></i>Forums</a> </li>
+<li><a href="{% url 'etudiants'%}"><i class="fa fa-envelope"></i>Discussions</a> </li>
+
+{% endblock %}
+
+{% block btn %}
+    {% if user.is_authenticated %}
+                 <form action="{% url 'logout' %}" method="post" class="logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Déconnexion</button>
+                        </form>
+                {% else %}
+                    <a class="nav-link btn btn-outline-primary" href="{% url 'connect' %}">Connexion</a>
+                {% endif %}
+{% endblock btn  %}
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4 text-center">Mon Espace</h2>
+<div class="container-fluid-custom">
+    <h2 class="text-center">Mon Espace Étudiant</h2>
 
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white py-3">
-                    <h4 class="mb-0">Mes informations</h4>
+        <div class="col-lg-8 col-md-10"> {# Utilisez col-lg-8 et col-md-10 pour une meilleure largeur sur les écrans moyens/grands #}
+            <div class="custom-card">
+                <div class="card-header">
+                    Mes informations
                 </div>
-                <div class="card-body text-center">
-                    {% if user.profil %}
-                        <img src="{% static 'geinfo/img/profils/' %}{{ user.profil }}" alt="Photo de profil" class="rounded-circle mb-10" width="150" height="150" style="object-fit: cover;">
-
+                <div class="card-body profile-info">
+                    {% if user.profil %} {# Vérifiez si user.profil existe et a une URL #}
+                        <img src="{% static 'geinfo/img/profils/' %}{{ user.profil }}" alt="Photo de profil" class="rounded-circle mb-3" width="150" height="150" style="object-fit: cover;">
                     {% else %}
-                        <i class="fas fa-user-circle fa-5x text-secondary mb-3"></i>
+                        {# Icône par défaut si pas de photo de profil, utilisez Font Awesome si disponible #}
+                        <i class="fas fa-user-circle fa-5x text-secondary mb-3" style="color: #ccc;"></i>
                         <p class="text-muted">Aucune photo de profil définie.</p>
                     {% endif %}
 
-                    <h5 class="mb-2">{{ user.nom }} {{ user.prenom }}</h5>
+                    <h5 class="mb-1">{{ user.nom }} {{ user.prenom }}</h5>
                     <p class="text-muted mb-1">{{ user.matricule }}</p>
-                    <p class="text-muted mb-3">{{ user.niveau }} - {{ user.filiere }}</p>
-                    <p>{% if text1 %}
-                                {{text1.tex1}}{% endif %}
-
-                                {% if text2 %}
-                                {{text2.tex2}}{% endif %}</p>
+                    <p class="mb-3">{{ user.niveau }} - {{ user.filiere }}</p>
+                    {# Assurez-vous que text1 et text2 sont définis et accessebles dans votre contexte #}
+                    <p class="text-secondary">
+                        {% if text1 %}{{ text1.tex1 }}{% endif %}
+                        {% if text2 %}{{ text2.tex2 }}{% endif %}
+                    </p>
                 </div>
-                <hr class="my-0">
-                <div class="card-body">
+
+                <div class="details-section">
                     <div class="row mb-3">
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <h6 class="mb-0">Année d'inscription</h6>
                         </div>
-                        <div class="col-sm-9 text-secondary">
+                        <div class="col-sm-8 text-secondary">
                             {{ user.annee }}
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <h6 class="mb-0">Dernière connexion</h6>
                         </div>
-                        <div class="col-sm-9 text-secondary">
+                        <div class="col-sm-8 text-secondary">
                             {% if user.last_login %}
                                 {{ user.last_login|date:"d M Y H:i:s" }}
                             {% else %}
@@ -91,66 +316,77 @@
                         </div>
                     </div>
 
-                    <h5 class="mt-3">Actions</h5>
-                    <div class="d-flex justify-content-end mt-3">
-                       <button type="button" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modifierMdp">Modifier le mot de passe</button>
-                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modifierInfos">Modifier la photo de profil</button>
+                    <h5 class="mt-4" style="color: #2c3e50; font-weight: 600;">Actions</h5>
+                    <div class="d-flex justify-content-center flex-wrap gap-3 mt-3 action-buttons">
+                       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifierMdp">Modifier le mot de passe</button>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modifierInfos">Modifier la photo de profil</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Utilisez une nouvelle rangée pour les sections inférieures pour un meilleur contrôle du layout #}
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-6 mb-4"> {# Appliquez custom-card directement au col #}
+            <div class="custom-card">
+                <div class="card-header">
+                    Mes groupes
+                </div>
+                <div class="card-body">
+                    {% if user.groups.all %}
+                        <ul class="list-group list-group-flush">
+                            {% for group in user.groups.all %}
+                                <li class="list-group-item">
+                                    {% if group.profile_image and group.profile_image.url %}
+                                        <img src="{{ group.profile_image.url }}" alt="Groupe" class="profile-img">
+                                    {% else %}
+                                        <i class="fas fa-users fa-lg text-secondary me-3"></i> {# Icône par défaut pour groupe #}
+                                    {% endif %}
+                                    {{ group.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted-custom">Vous n'appartenez à aucun groupe pour le moment.</p>
+                    {% endif %}
+                    <div class="bottom-actions">
+                        <a class="btn btn-primary" href="#">Voir tous les groupes</a> {# Remplacez # par l'URL réelle #}
+                        <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#createForumModal">
+                            Créer un Forum
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-             <div class="row">
-                 <div class="col-md-6 card shadow-sm mb-4">
-            <div class="card-header bg-info text-white py-3">
-                <h4 class="mb-0">Mes groupes</h4>
-            </div>
-            <div class="row">
-                {% if user.groups.all %}
+        <div class="col-lg-5 col-md-6 mb-4"> {# Appliquez custom-card directement au col #}
+            <div class="custom-card">
+                <div class="card-header">
+                    Conversations récentes
+                </div>
+                <div class="card-body">
+                    {% if last_5_contacts %}
                         <ul class="list-group list-group-flush">
-                            {% for group in user.groups.all %}
-                                <li class="list-group-item"><img src="{{ group.profile_image.url }}" alt="Groupe" class="profile-img">{{ group.name }}</li>
+                            {% for contact_etudiant in last_5_contacts %}
+                                <li class="list-group-item">
+                                    {# Assurez-vous que contact_etudiant a une image de profil si vous voulez l'afficher #}
+                                     <img src="{% static 'geinfo/img/profils/' %}{{contact_etudiant.profil}}" alt="Contact" class="profile-img">
+                                    {#<i class="fas fa-comment-dots fa-lg text-secondary me-3"></i>  Icône par défaut pour conversation #}
+                                    <span>{{ contact_etudiant.nom }} {{ contact_etudiant.prenom|default:"" }}</span> {# Afficher le prénom si disponible #}
+                                    <a href="{% url 'chat_view' contact_etudiant.id %}" class="btn btn-primary btn-sm">Discuter</a>
+                                </li>
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p class="text-muted">Vous n'appartenez à aucun groupe pour le moment.</p>
+                        <p class="text-muted-custom">Aucune conversation récente.</p>
                     {% endif %}
-                <div class="d-flex justify-content-end mt-3">
-                    <a class="btn btn-primary me-2">Voir tous les groupes</a> <a class="btn btn-success">Creer mon groupe</a>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6 card shadow-sm mb-4">
-            <div class="conversation-header card-header bg-warning text-black py-3">
-                <h4>Conversations récentes</h4>
-            </div>
-            <div class="row">
-               {% if last_5_contacts %}
-                    <ul>
-                        {% for contact_etudiant in last_5_contacts %}
-                            <li>
-                                {# Supposons que vous ayez une URL pour le profil d'un étudiant avec son username ou son ID #}
-                                {# Si vous avez une URL pour le profil d'un autre étudiant, remplacez 'profil_etudiant' et l'argument #}
-
-                                {{ contact_etudiant.nom }} <a href="{% url 'chat_view' contact_etudiant.id %}" class="btn btn-primary btn-sm">Discuter</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-             {% else %}
-                <p>Aucune conversation récente.</p>
-            {% endif %}
-            </div>
-        </div>
     </div>
 </div>
 
-
-
-            </div>
-        </div>
-    </div>
-</div>
 
 
             {% comment "" %}Formulaire de modification{% endcomment %}
@@ -232,8 +468,35 @@
             </div>
         </div>
 
+<div class="modal fade" id="createForumModal" tabindex="-1" aria-labelledby="createForumModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createForumModalLabel">Créer un Nouveau Forum</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="create-forum-form">
+                        <div class="mb-3">
+                            <label for="forum-name" class="form-label">Nom du Forum</label>
+                            <input type="text" class="form-control" id="forum-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="forum-description" class="form-label">Description (Optionnel)</label>
+                            <textarea class="form-control" id="forum-description" rows="3"></textarea>
+                        </div>
+                        <input type="hidden" id="forum-creator-matricule">
+                        <button type="submit" class="btn btn-primary">Créer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
+{% block scripts_extra %}
+    <script src="https://kit.fontawesome.com/votre_code_font_awesome.js" crossorigin="anonymous"></script>
+    {# Remplacez 'votre_code_font_awesome.js' par le script réel de Font Awesome pour que les icônes s'affichent #}
+    {# Ou si vous utilisez Bootstrap Icons ou d'autres, assurez-vous qu'ils sont liés. #}
 
-
+    {% endblock %}
 {% endblock content %}
-{% block script %} {% static 'geinfo/js/changePass.js' %} {% endblock script %}

@@ -1,69 +1,182 @@
 {% extends "base.html" %}
-{% load static %}
 
+{% block title %}Connexion Étudiant{% endblock %}
 
+{% block head_extra %}
+    <style>
+        /* (Tous les styles CSS que nous avons définis précédemment pour le design, le flou, etc.) */
+        body {
+            background: linear-gradient(to right bottom, #87CEEB, #ADD8E6, #B0E0E6);
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        header, footer { display: none !important; }
+        main {
+            width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); padding: 40px;
+            border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18); max-width: 400px; width: 100%;
+            text-align: center; color: #333; margin: 20px;
+        }
+        .login-header { margin-bottom: 30px; }
+        .login-header .icon-circle {
+            width: 90px; height: 90px; background-color: #007bff; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+        }
+        .login-header .icon-circle img { width: 55px; height: 55px; filter: invert(100%); }
+        h2 { color: #333; font-weight: 600; margin-top: 15px; font-size: 1.8em; }
+        .input-group {
+            margin-bottom: 25px; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); display: flex; align-items: center;
+        }
+        .input-group-text {
+            background-color: rgba(255, 255, 255, 0.5); border: none; padding: 12px 15px;
+            display: flex; align-items: center; justify-content: center; border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .input-group-text img { width: 20px; height: 20px; filter: grayscale(100%) brightness(50%); }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.7); border: none; padding: 12px 15px;
+            font-size: 1.05em; color: #333; border-left: none; flex-grow: 1;
+        }
+        .form-control::placeholder { color: rgba(0, 0, 0, 0.5); }
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+            border-color: transparent;
+        }
+        .btn-login {
+            background-color: #007bff; color: white; padding: 15px 0; border-radius: 10px;
+            font-size: 1.2em; font-weight: bold; width: 100%; border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease; letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+        .btn-login:hover {
+            background-color: #0056b3; transform: translateY(-2px); box-shadow: 0 7px 20px rgba(0, 123, 255, 0.6);
+        }
+        .btn-login:active {
+            transform: translateY(0); box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+        }
 
-{% block title %}Accueil{% endblock title %}
-{% block rel %}{% static 'geinfo/css/style.css' %}{% endblock rel %}
+        /* Styles pour les messages d'erreur */
+        .error-message {
+            color: #dc3545; font-size: 0.9em; text-align: left; margin-top: -15px;
+            margin-bottom: 20px; padding-left: 5px;
+        }
+        ul.error-list { list-style: none; padding: 0; margin: 0; }
+        .form-check { text-align: left; margin-bottom: 20px; color: #555; font-size: 0.95em; }
+        .form-check-input { margin-right: 8px; }
+    </style>
+{% endblock %}
 
 {% block content %}
-<div class="row" id="content">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="icon-circle">
+                <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icône utilisateur">
+            </div>
+            <h2>Connexion</h2>
+        </div>
 
-    <div class="col-md-4">
-		<p><img src="{% static 'geinfo/img/logo.jpg' %}"></p>
+        {# Votre formulaire HTML fourni - NE CHANGE PAS #}
+        <form id="loginForm" method="post" action="{% url 'connect' %}">
+            {% csrf_token %}
 
-		<form method="post" action="{% url 'login' %}">
-             {% csrf_token %}
-
-             {% if form.errors %}
-                <div class="error-container">
-                    <p class="error-message">Veuillez corriger les erreurs ci-dessous :</p>
-                    {{ form.non_field_errors }}
-                    {% for field in form %}
-                       <p style="color:red;">{{ field.errors }}</p>
-                    {% endfor %}
+            {# Afficher les erreurs non-champ #}
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    <ul class="error-list">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
-             {% endif %}
+            {% endif %}
 
-            <!-- Champ Identifiant -->
-            <div class="mb-3">
-                <label for="identifiant" class="form-label">Identifiant</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control-lg" id="identifiant" placeholder="Entrez votre identifiant" name="identifiant">
-                    {{ form.username.errors }} {# Afficher les erreurs spécifiques au champ identifiant #}
+            <div class="input-group">
+                <span class="input-group-text">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Icône Nom d'utilisateur">
+                </span>
+                <input type="text"
+                       class="form-control"
+                       id="username"
+                       placeholder="Matricule"
+                       name="matricule"
+                       required
+                       value="{{ form.matricule.value|default_if_none:'' }}" {# Pour pré-remplir #}
+                       {% if form.matricule.errors %}aria-invalid="true"{% endif %} {# Pour l'accessibilité et le style d'erreur #}
+                >
+            </div>
+            {# Afficher les erreurs spécifiques au champ matricule #}
+            {% if form.matricule.errors %}
+                <div class="error-message">
+                    <ul class="error-list">
+                        {% for error in form.matricule.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
+            {% endif %}
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Icône Mot de passe">
+                </span>
+                <input type="password"
+                       class="form-control"
+                       id="password"
+                       placeholder="Mot de passe"
+                       name="password"
+                       required
+                       {# Pas de value pour le mot de passe pour des raisons de sécurité #}
+                       {% if form.password.errors %}aria-invalid="true"{% endif %}
+                >
+            </div>
+            {# Afficher les erreurs spécifiques au champ password #}
+            {% if form.password.errors %}
+                <div class="error-message">
+                    <ul class="error-list">
+                        {% for error in form.password.errors %}
+                            <li>{{ error inconvénient.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me"
+                       {% if request.POST.remember_me %}checked{% endif %}>
+                <label class="form-check-label" for="remember_me">Se souvenir de moi</label>
             </div>
 
-            <!-- Champ Mot de passe -->
-            <div class="mb-3">
-                <label for="motdepasse" class="form-label">Mot de passe</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input type="password" class="form-control-lg" id="motdepasse" placeholder="Entrez votre mot de passe"
-                           name="motdepasse" data-bs-toggle="password">{{ form.password.errors }}
-                </div>
-            </div>
-
-            <!-- Option Se souvenir de moi -->
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                <label class="form-check-label" for="remember">Se souvenir de moi</label>
-            </div>
-            <!-- Bouton de soumission -->
-            <button type="submit" class="btn btn-primary w-30">Se connecter</button>
-            <p><a href="#">Mot de passe oublié ?</a></p>
+            <button type="submit" class="btn btn-login">CONNEXION</button>
         </form>
+    </div>
+{% endblock %}
 
-	</div>
+{% block scripts_extra %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const matriculeInput = document.getElementById('username'); // L'ID dans votre HTML est 'username'
+            const passwordInput = document.getElementById('password');
 
-	<div class="col-md-6" id="accueil">
-		<h1 class="text-light">NOUVEAU OU ANCIEN, NOUS SOMMES UNE FAMILLE</h1>
-	</div>
+            {% if form.matricule.errors %}
+                if (matriculeInput) {
+                    matriculeInput.classList.add('is-invalid');
+                }
+            {% endif %}
 
-</div>
-
-	
-{% endblock content %}
-{% block link%} {%url 'propos' %} {% endblock link %}
-{% block text %} A Propos {% endblock text %}
+            {% if form.password.errors %}
+                if (passwordInput) {
+                    passwordInput.classList.add('is-invalid');
+                }
+            {% endif %}
+        });
+    </script>
+{% endblock %}

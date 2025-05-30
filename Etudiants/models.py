@@ -51,7 +51,7 @@ class Etudiant(AbstractBaseUser,PermissionsMixin):
 
     forums = models.ManyToManyField(
         'forum.Forum',  # <-- Référence le modèle Forum par son label d'application et son nom
-        related_name='membres',
+        related_name='inscrit',
         blank=True,
         verbose_name="Forums d'appartenance"
     )

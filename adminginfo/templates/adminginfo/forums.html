@@ -1,0 +1,87 @@
+{% load static %}
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm rounded-lg">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Liste des Forums</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="forums-list" class="list-group list-group-flush">
+                                    <div class="p-3 text-center text-muted">Chargement des forums...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="forum-detail-card mb-4" id="forum-detail-view">
+                            <h3 id="forum-detail-name">Sélectionnez un forum</h3>
+                            <p><span class="label">Description :</span> <span class="value" id="forum-detail-description"></span></p>
+                            <p><span class="label">Créateur :</span> <span class="value" id="forum-detail-creator"></span></p>
+                            <p><span class="label">Nombre de membres :</span> <span class="value" id="forum-detail-members-count"></span></p>
+                            <p><span class="label">Date de création :</span> <span class="value" id="forum-detail-date-creation"></span></p>
+
+                            <h5 class="mt-4">Membres Actuels du Forum :</h5>
+                            <ul id="forum-detail-members-list" class="list-group mb-3">
+                                <li class="list-group-item text-muted">Aucun membre</li>
+                            </ul>
+
+                            <div class="d-grid gap-2 mb-4">
+                                <button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#addMembersModal" id="add-members-btn">
+                                    <i class="fas fa-user-plus me-2"></i> Ajouter des Membres
+                                </button>
+                            </div>
+
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-warning" id="edit-forum-btn" data-bs-toggle="modal" data-bs-target="#editForumModal">
+                                    Modifier le Forum
+                                </button>
+                                <button type="button" class="btn btn-danger" id="delete-forum-btn">
+                                    Supprimer le Forum
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#createForumModalGlobal">
+                                Créer un nouveau Forum (Global)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div class="modal fade" id="addMembersModal" tabindex="-1" aria-labelledby="addMembersModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMembersModalLabel">Ajouter des Membres au Forum: <span id="add-members-modal-forum-name"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="add-members-modal-forum-id">
+                    <div class="mb-3">
+                        <label for="available-members-select" class="form-label">Sélectionner des étudiants à ajouter :</label>
+                        <select class="form-select" id="available-members-select" multiple aria-label="Sélection multiple des membres">
+                            </select>
+                        <small class="form-text text-muted">Utilisez Ctrl/Cmd pour sélectionner plusieurs étudiants.</small>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="submit-add-members-btn">Ajouter les Membres</button>
+                </div>
+            </div>
+        </div>
+
+    <script>
+        const API_ETUDIANTS_LIST_URL = "{% url 'etudiants_list_api' %}";
+        const API_FORUMS_LIST_URL = "{% url 'forums_list_api' %}";
+        const API_CREATE_FORUM_URL = "{% url 'create_forum_api' %}";
+        const API_CREATE_FORUM_GLOBAL_URL = "{% url 'create_forum_api' %}";
+        const DEFAULT_PROFILE_IMAGE_URL = "{% static 'geinfo/img/profil/default_profile.png' %}";
+        const LOGOUT_URL = "{% url 'logout' %}";
+
+        // NOUVELLES CONSTANTES POUR LES MEMBRES DES FORUMS
+        //const API_FORUM_MEMBERS_URL_BASE = "url 'forum_members_api' 0  ".replace('/0/', '/'); // Base sans l'ID
+        //const API_FORUM_REMOVE_MEMBER_URL_BASE =  url 'forum_remove_member_api' 0 0 ".replace('/0/0/', '/'); // Base sans les IDs
+    </script>

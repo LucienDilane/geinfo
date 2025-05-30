@@ -5,117 +5,346 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
+    <meta http-equiv="refresh" content="5">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'chat/css/style_messenger.css' %}">
+
     <style>
-        /* Styles additionnels ou modifications */
+        /* Styles de base pour un look épuré */
         html, body {
             height: 100%;
             margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right bottom, #E0F2F7, #B0E0E6, #87CEEB); /* Dégradé doux */
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; /* Empêche le défilement du body */
         }
-        .chat-box {
-            height: calc(100vh - 180px); /* Ajustez la hauteur */
-            overflow-y: auto;
+
+        /* Conteneur principal de la conversation */
+        #container {
             display: flex;
-            flex-direction: column-reverse; /* Derniers messages en bas */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
         }
-        .msg-bubble {
-             max-width: 70%;
-             word-wrap: break-word;
-         }
-        .msg-right {
-            background-color: #0d6efd; /* Bootstrap primary */
-            color: white;
-            border-bottom-right-radius: 0;
+
+        /* Conteneur principal de la conversation */
+        .chat-main-card {
+            background-color: rgba(255, 255, 255, 0.7); /* Fond semi-transparent */
+            backdrop-filter: blur(8px); /* Effet de flou derrière la carte */
+            border-radius: 20px; /* Coins plus arrondis */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); /* Ombre plus douce */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure légère */
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 700px; /* Largeur maximale pour le chat */
+            height: 90vh; /* Hauteur relative à la fenêtre */
+            overflow: hidden;
         }
-        .msg-left {
-            background-color: #e9ecef; /* Bootstrap light */
-            color: #212529;
-            border-bottom-left-radius: 0;
+
+        /* Header de la conversation (nom du destinataire) */
+        .chat-header {
+            background-color: rgba(255, 255, 255, 0.4); /* Header semi-transparent */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 15px 25px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Espace entre l'image et le nom */
         }
-         .message-container {
-             margin-bottom: 1rem;
-         }
-         /* Assurez-vous que l'image de profil a une taille définie */
+
+        .chat-header h5 {
+            margin-bottom: 0;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
         .profile-img {
-            width: 40px;
-            height: 40px;
-            object-fit: cover; /* Empêche la déformation de l'image */
+            width: 50px; /* Plus grande que le précédent */
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .message-sender-img {
-             width: 30px;
-             height: 30px;
-             object-fit: cover;
+            width: 35px; /* Plus petite pour les bulles de message */
+            height: 35px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Zone de défilement des messages */
+        .chat-box {
+            flex-grow: 1; /* Permet à la boîte de chat de prendre l'espace disponible */
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* CHANGÉ ICI POUR QUE LES MESSAGES SOIENT EN BAS ET PAS EN REVERSE */
+            gap: 15px; /* Espacement entre les messages */
+        }
+
+        /* Barre de défilement stylisée */
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-box::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        .chat-box::-webkit-scrollbar-thumb {
+            background: rgba(0, 123, 255, 0.5); /* Couleur de la poignée */
+            border-radius: 10px;
+        }
+        .chat-box::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 123, 255, 0.7);
+        }
+
+        /* Conteneur d'un message */
+        .message-container {
+            display: flex;
+            align-items: flex-end; /* Aligner les bulles en bas avec l'image */
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        /* Bulles de message */
+        .msg-bubble {
+            max-width: 75%; /* Ajuster la largeur max */
+            padding: 12px 18px;
+            border-radius: 20px; /* Coins plus doux */
+            word-wrap: break-word;
+            line-height: 1.4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Ombre subtile */
+            position: relative; /* Pour les triangles */
+        }
+
+        /* Bulles de message envoyées par l'utilisateur connecté */
+        .msg-right {
+            background-color: #007bff; /* Bleu primaire */
+            color: white;
+            border-bottom-right-radius: 5px; /* Coin inférieur droit moins arrondi pour le "bec" */
+            margin-left: auto; /* Aligner à droite */
+            border: 1px solid rgba(0, 123, 255, 0.7);
+        }
+        /* Triangle pour les bulles de droite */
+        .msg-right::after {
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            right: -8px; /* Positionne le bec */
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-left-color: #007bff; /* Couleur du bec */
+            border-bottom-color: #007bff;
+            border-right: 0;
+            border-top: 0;
+        }
+        .msg-right .message-time {
+            color: rgba(255, 255, 255, 0.8); /* Texte blanc plus transparent */
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        /* Bulles de message reçues */
+        .msg-left {
+            background-color: #f0f2f5; /* Gris très clair */
+            color: #333;
+            border-bottom-left-radius: 5px; /* Coin inférieur gauche moins arrondi pour le "bec" */
+            margin-right: auto; /* Aligner à gauche */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        /* Triangle pour les bulles de gauche */
+        .msg-left::after {
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            left: -8px; /* Positionne le bec */
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-right-color: #f0f2f5; /* Couleur du bec */
+            border-bottom-color: #f0f2f5;
+            border-left: 0;
+            border-top: 0;
+        }
+        .msg-left .message-time {
+            color: #777;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+
+        /* Footer d'envoi de message */
+        .chat-footer {
+            background-color: rgba(255, 255, 255, 0.6); /* Fond semi-transparent */
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 15px 25px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-footer .form-control {
+            border-radius: 25px; /* Champ de texte arrondi */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .chat-footer .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+            border-color: #007bff;
+            background-color: #fff;
+        }
+        .chat-footer .btn-primary {
+            border-radius: 25px; /* Bouton arrondi */
+            padding: 10px 25px;
+            font-weight: 600;
+            background-color: #007bff;
+            border-color: #007bff;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 123, 255, 0.2);
+        }
+        .chat-footer .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(0, 123, 255, 0.3);
+        }
+        .chat-footer .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+        }
+
+        /* Message quand il n'y a pas de conversation */
+        .no-messages-text {
+            color: #777;
+            font-style: italic;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #container {
+                padding: 10px;
+            }
+            .chat-main-card {
+                height: 98vh; /* Plus grand sur mobile */
+                border-radius: 10px;
+            }
+            .chat-header {
+                padding: 12px 15px;
+                font-size: 1.1em;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+            .profile-img {
+                width: 40px;
+                height: 40px;
+            }
+            .chat-box {
+                padding: 15px;
+                gap: 10px;
+            }
+            .msg-bubble {
+                max-width: 85%;
+                padding: 10px 15px;
+                border-radius: 15px;
+            }
+            .chat-footer {
+                padding: 10px 15px;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+            .chat-footer .form-control {
+                padding: 8px 15px;
+            }
+            .chat-footer .btn-primary {
+                padding: 8px 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container-fluid h-100" id="container">
-        <div class="row justify-content-center h-100">
+        <div class="row justify-content-center h-100 w-100">
             <div class="col-md-8 col-lg-6 col-xl-5 h-100 d-flex flex-column">
-                <div class="card flex-shrink-0 mb-3">
-                    <div class="card-header d-flex align-items-center">
+                <div class="chat-main-card">
+                    <div class="chat-header">
                         {% if receiver %}
-                            {# Utilise le champ 'profil' (chaine) pour construire l'URL de l'image statique #}
                             {% if receiver.profil %}
-                                <img src="{% static 'geinfo/img/profils/' %}{{ receiver.profil }}" alt="{{ receiver.nom }}" class="rounded-circle me-2 profile-img">
+                                <img src="{% static 'geinfo/img/profils/' %}{{ receiver.profil }}" alt="{{ receiver.nom }}" class="profile-img">
                             {% else %}
-                                {# Image par défaut si le champ profil est vide ou nul #}
-                                <img src="{% static 'geinfo/img/user.jpg' %}" alt="Image par défaut" class="rounded-circle me-2 profile-img"> {# Adaptez le chemin si votre image par défaut est nommée différemment #}
+                                <img src="{% static 'geinfo/img/user.jpg' %}" alt="Image par défaut" class="profile-img">
                             {% endif %}
-                            <h5>{{ receiver.nom }}</h5> {# Utilise le champ 'nom' de l'Etudiant #}
+                            <h5>{{ receiver.nom }} {{ receiver.prenom|default:"" }}</h5>
                         {% else %}
-                         <h5>Chargement de la conversation...</h5>
+                            <h5>Chargement de la conversation...</h5>
                         {% endif %}
                     </div>
-                </div>
 
-                <div class="chat-box card-body flex-grow-1">
-                    {# Les messages sont affichés en ordre inverse pour le défilement vers le bas #}
-                    {% for message in messages reversed %} {# Utilise 'reversed' pour afficher les messages du plus ancien au plus récent en bas #}
-                        {% if message.sender == sender %} {# Compare l'expéditeur du message (User) avec l'utilisateur connecté (sender) #}
-                            <div class="d-flex justify-content-end message-container">
-                                <div class="msg-bubble msg-right p-2 rounded">
-                                    {{ message.content }}
-                                    <div class="text-end text-light" style="font-size: 0.7rem;">{{ message.timestamp|date:"H:i" }}</div>
+                    <div class="chat-box" id="chat-box"> {# Ajout de l'ID pour un potentiel usage JS futur #}
+                        {# Les messages sont affichés dans l'ordre chronologique #}
+                        {% for message in messages %}
+                            {% if message.sender == sender %}
+                                <div class="d-flex justify-content-end message-container">
+                                    <div class="msg-bubble msg-right">
+                                        {{ message.content }}
+                                        <div class="text-end message-time">{{ message.timestamp|date:"H:i" }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        {% else %} {# Le message est envoyé par le destinataire (Etudiant) #}
-                            <div class="d-flex justify-content-start message-container">
-                                {# Accéder à la photo de profil de l'expéditeur du message (l'Etudiant), en utilisant le champ 'profil' #}
-                                {# Note : Cela suppose que message.sender est bien l'objet Etudiant quand le message n'est pas envoyé par l'utilisateur connecté #}
-                                {% if message.sender.profil %}
-                                    <img src="{% static 'geinfo/img/profils/' %}{{ message.sender.profil }}" alt="{{ message.sender.nom }}" class="rounded-circle me-2 message-sender-img">
-                                {% else %}
-                                    {# Image par défaut si le champ profil de l'expéditeur est vide #}
-                                     <img src="{% static 'geinfo/img/user.jpg' %}" alt="Image par défaut" class="rounded-circle me-2 message-sender-img"> {# Adaptez le chemin #}
-                                {% endif %}
-                                <div class="msg-bubble msg-left p-2 rounded">
-                                    {{ message.content }}
-                                    {# Assurez-vous que votre modèle Message a un champ timestamp #}
-                                    <div class="text-muted" style="font-size: 0.7rem;">{{ message.timestamp|date:"H:i" }}</div>
+                            {% else %}
+                                <div class="d-flex justify-content-start message-container">
+                                    {% if message.sender.profil %}
+                                        <img src="{% static 'geinfo/img/profils/' %}{{ message.sender.profil }}" alt="{{ message.sender.nom }}" class="message-sender-img">
+                                    {% else %}
+                                        <img src="{% static 'geinfo/img/user.jpg' %}" alt="Image par défaut" class="message-sender-img">
+                                    {% endif %}
+                                    <div class="msg-bubble msg-left">
+                                        {{ message.content }}
+                                        <div class="message-time">{{ message.timestamp|date:"H:i" }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endif %}
-                    {% empty %}
-                     <p class="text-center">Commencez la conversation !</p>
-                    {% endfor %}
-                </div>
+                            {% endif %}
+                        {% empty %}
+                            <p class="no-messages-text">Commencez la conversation !</p>
+                        {% endfor %}
+                    </div>
 
-                {% if receiver %}
-                <div class="card-footer flex-shrink-0 mt-3">
-                    {# Le formulaire envoie un message à l'Etudiant (receiver) #}
-                    <form action="{% url 'message' receiver.id %}" method="post" class="d-flex"> {# Adaptez le nom de l'URL si nécessaire #}
-                        {% csrf_token %}
-                        <input type="text" name="message" class="form-control me-2" placeholder="Tapez votre message..." required>
-                        <button type="submit" class="btn btn-primary">Envoyer</button>
-                    </form>
+                    {% if receiver %}
+                    <div class="chat-footer">
+                        <form action="{% url 'chat_view' receiver.id %}" method="post" class="d-flex w-100"> {# CORRIGÉ ICI #}
+                            {% csrf_token %}
+                            <input type="text" name="message" class="form-control me-2" placeholder="Tapez votre message..." required>
+                            <button type="submit" class="btn btn-primary">Envoyer</button>
+                        </form>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Ce script simple fera défiler le chat vers le bas au chargement initial
+        const chatBox = document.getElementById('chat-box');
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
 </body>
 </html>

@@ -2,28 +2,35 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 
-
 class LoginForm(forms.Form):
-    identifiant = forms.CharField(max_length=150, label='identifiant')
-    motdepasse = forms.CharField(widget=forms.PasswordInput, label='motdepasse')
+    # CHANGEMENT ICI : Les noms des champs correspondent maintenant à ceux de votre HTML
+    matricule = forms.CharField(max_length=150, label='Matricule')
+    password = forms.CharField(widget=forms.PasswordInput, label='Mot de passe')
 
     def clean(self):
-        identifiant = self.cleaned_data.get('identifiant')
-        motdepasse = self.cleaned_data.get('motdepasse')
+        # Récupérez les données avec les NOUVEAUX NOMS de champs
+        matricule = self.cleaned_data.get('matricule')
+        password = self.cleaned_data.get('password')
 
-        if identifiant and motdepasse:
-            user = authenticate(username=identifiant, password=motdepasse)
+        if matricule and password:
+            # Tente d'authentifier l'utilisateur
+            # Assurez-vous que votre backend d'authentification utilise 'matricule' comme nom d'utilisateur
+            # Si votre backend d'authentification Django utilise toujours 'username',
+            # il faudra le mapper ici ou ajuster le backend d'auth.
+            # Supposons que 'matricule' correspond au 'username' de l'utilisateur Django.
+            user = authenticate(username=matricule, password=password)
+
             if user is not None:
                 if user.is_superuser:
-                    raise forms.ValidationError("Identifiant ou mot de passe incorrect.")
+                    # Ne pas laisser les superutilisateurs se connecter via ce formulaire
+                    raise forms.ValidationError("Matricule ou mot de passe incorrect.")
                 elif user.is_active:
                     self.cleaned_data['user'] = user
                 else:
                     raise forms.ValidationError("Ce compte est désactivé.")
             else:
-                raise forms.ValidationError("Identifiant ou mot de passe incorrect.")
+                raise forms.ValidationError("Matricule ou mot de passe incorrect.")
         return self.cleaned_data
-
 class ModifierPhotoProfilForm(forms.Form):
     photo = forms.ImageField(
         label='profiletof',
