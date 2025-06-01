@@ -6,18 +6,38 @@ import json
 from django.http import JsonResponse, Http404
 
 from Etudiants.models import Etudiant
-from .models import Message
+from forum.models import Forum
+from .models import Message, MessageForum
 # Create your views here.
 
-
-
 @login_required
-def contact_list(request):
-    # Si tes contacts sont les autres utilisateurs :
-    contacts = Etudiant.objects.exclude(id=request.user.id)
-    # Si tu as un modèle Contact :
-    # contacts = Contact.objects.filter(user=request.user)
-    return render(request, 'chat/list_etudiants.html', {'contacts': contacts})
+def chatgroup(request,forum_id):
+    forum=get_object_or_404(Forum, id=forum_id)
+    current_etudiant=request.user
+
+    if request.method=='POST':
+        contenu=request.POST.get("message")
+
+        if contenu and contenu.strip():
+            MessageForum.objects.create(
+                forum=forum,
+                auteur=current_etudiant,
+                contenu=contenu
+            )
+            return redirect("chatgroup", forum_id=forum.id)
+        else:
+            pass
+
+    messages = forum.messages.all()
+    forums=current_etudiant.forums.all()
+    context={
+        "forum":forum,
+        "forums":forums,
+        "messages":messages,
+        "etudiant":current_etudiant
+    }
+    return render(request,"chat/chatforum.html",context)
+
 
 @login_required
 def chat_view(request, receiver_id):

@@ -250,7 +250,7 @@
 {% endblock %}
  {% block nav %}
 <li><a href="{% url 'profil'%}"><i class="fas fa-user"></i>Profil</a> </li>
-<li><a href="#"><i class="fas fa-comments"></i>Forums</a> </li>
+<li><a href="{% url 'forums'%}"><i class="fas fa-comments"></i>Forums</a> </li>
 <li><a href="{% url 'etudiants'%}"><i class="fa fa-envelope"></i>Discussions</a> </li>
 
 {% endblock %}
@@ -334,16 +334,17 @@
                     Mes groupes
                 </div>
                 <div class="card-body">
-                    {% if user.groups.all %}
+                    {% if user.forums.all %}
                         <ul class="list-group list-group-flush">
-                            {% for group in user.groups.all %}
+                            {% for group in user.forums.all %}
                                 <li class="list-group-item">
                                     {% if group.profile_image and group.profile_image.url %}
                                         <img src="{{ group.profile_image.url }}" alt="Groupe" class="profile-img">
                                     {% else %}
                                         <i class="fas fa-users fa-lg text-secondary me-3"></i> {# Icône par défaut pour groupe #}
                                     {% endif %}
-                                    {{ group.name }}
+                                    <span> {{ group.nom }}---------------------</span>  {{group.nombre_membres}} membres
+                                    <a href="{% url 'chatgroup' group.id %}" class="btn btn-light">Echanger</a>
                                 </li>
                             {% endfor %}
                         </ul>

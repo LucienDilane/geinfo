@@ -1,0 +1,367 @@
+/* style.css */
+
+:root {
+    --nexus-bg-light: #f8f9fa; /* bg-light de Bootstrap */
+    --nexus-bg-white: #ffffff; /* bg-white de Bootstrap */
+    --nexus-border-color: #dee2e6; /* border de Bootstrap */
+    --nexus-primary: #007bff; /* primary de Bootstrap */
+    --nexus-text-muted: #6c757d; /* text-muted de Bootstrap */
+    --nexus-active-bg: #e9ecef; /* couleur de survol ou actif léger */
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--nexus-bg-light);
+}
+
+.discussion-app {
+    background-color: var(--nexus-bg-light);
+}
+
+/* --- Top Nav Bar --- */
+.navbar {
+    z-index: 1020;
+    box-shadow: 0 2px 4px rgba(0,0,0,.04);
+}
+
+.navbar-brand img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
+.search-bar .form-control {
+    background-color: var(--nexus-bg-light);
+    border: none;
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 38px;
+}
+
+.icon-button {
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--nexus-text-muted);
+    transition: color 0.2s ease-in-out;
+}
+
+.icon-button:hover {
+    color: var(--nexus-primary);
+}
+
+/* --- Main Content Area (Flex container) --- */
+.main-content {
+    background-color: var(--nexus-bg-light);
+    flex-grow: 1;
+}
+
+/* --- Left Sidebar --- */
+.left-sidebar {
+    width: 250px;
+    min-width: 200px;
+    overflow-y: auto;
+    height: calc(100vh - 65px);
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.left-sidebar .nav-link-custom {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: var(--nexus-text-muted);
+    text-decoration: none;
+    border-radius: 0.3rem;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    font-size: 0.9rem;
+}
+
+.left-sidebar .nav-link-custom:hover {
+    background-color: var(--nexus-active-bg);
+    color: var(--nexus-text-muted);
+}
+
+.left-sidebar .nav-link-custom.active {
+    background-color: var(--nexus-primary);
+    color: var(--nexus-bg-white);
+    font-weight: bold;
+}
+
+.left-sidebar .nav-link-custom.active .badge {
+    background-color: var(--nexus-bg-white) !important;
+    color: var(--nexus-primary) !important;
+}
+
+.left-sidebar .nav-link-custom.create-new-team,
+.left-sidebar .nav-link-custom.create-new-channel {
+    color: var(--nexus-primary);
+}
+.left-sidebar .nav-link-custom.create-new-team:hover,
+.left-sidebar .nav-link-custom.create-new-channel:hover {
+    background-color: var(--nexus-active-bg);
+    color: var(--nexus-primary);
+}
+
+.left-sidebar .nav-link-custom img {
+    width: 30px;
+    height: 30px;
+}
+
+/* --- Central Content (Messages) --- */
+.messages-container {
+    padding-bottom: 80px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Styles pour les bulles de message */
+.message-bubble {
+    display: flex;
+    align-items: flex-start;
+    max-width: 70%;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    position: relative;
+}
+
+.message-bubble .message-content {
+    flex-grow: 1;
+    padding: 0 5px;
+}
+
+.message-bubble .message-sender-info {
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.message-bubble .message-text {
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+}
+
+.message-bubble .message-time {
+    font-size: 0.75rem;
+    color: var(--nexus-text-muted);
+    text-align: right;
+}
+
+/* Message de l'utilisateur actuel (à droite, bleu) */
+.message-bubble.current-user {
+    background-color: var(--nexus-primary);
+    color: var(--nexus-bg-white);
+    margin-left: auto;
+    flex-direction: row-reverse;
+    text-align: right;
+}
+.message-bubble.current-user .message-sender-info {
+    color: rgba(255, 255, 255, 0.8);
+}
+.message-bubble.current-user .message-time {
+    color: rgba(255, 255, 255, 0.7);
+}
+.message-bubble.current-user .avatar-container {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+
+/* Message des autres utilisateurs (à gauche, blanc/gris clair) */
+.message-bubble.other-user {
+    background-color: var(--nexus-bg-white);
+    color: #333;
+    margin-right: auto;
+    flex-direction: row;
+    text-align: left;
+}
+.message-bubble.other-user .avatar-container {
+    margin-right: 10px;
+    margin-left: 0;
+}
+
+.message-bubble .avatar-container img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+/* Zone de saisie de message */
+.message-input-area {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1010;
+    border-top: 1px solid var(--nexus-border-color);
+}
+
+.message-input-area textarea {
+    resize: none;
+    border-radius: 0.5rem;
+    padding-right: 80px;
+}
+
+.message-input-area .input-group-text {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+    z-index: 1;
+}
+
+.message-input-area .input-group-text .icon-button {
+    font-size: 1.1rem;
+    color: var(--nexus-text-muted);
+}
+
+.message-input-area .btn-primary {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+
+/* --- Right Sidebar --- */
+.right-sidebar {
+    width: 300px;
+    min-width: 250px;
+    overflow-y: auto;
+    height: calc(100vh - 65px);
+    position: sticky;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.right-sidebar .member-list img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
+.right-sidebar .member-list .member-actions .icon-button {
+    font-size: 1rem;
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 991.98px) {
+    .left-sidebar, .right-sidebar {
+        position: fixed;
+        height: 100vh;
+        top: 0;
+        z-index: 1030;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 0 10px rgba(0,0,0,.2);
+    }
+
+    .right-sidebar {
+        transform: translateX(100%);
+        left: auto;
+        right: 0;
+    }
+
+    .left-sidebar.show, .right-sidebar.show {
+        transform: translateX(0%);
+    }
+
+    .navbar .search-bar {
+        display: none;
+    }
+
+    .main-content {
+        width: 100%;
+    }
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1025;
+    display: none;
+}
+
+.toggle-sidebar-left, .toggle-sidebar-right {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 991.98px) {
+    .toggle-sidebar-left, .toggle-sidebar-right {
+        display: block;
+    }
+    .navbar .d-flex.ms-auto.align-items-center {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .navbar .d-flex.ms-auto.align-items-center > div:first-child {
+        margin-right: auto !important;
+    }
+    .navbar-brand {
+        flex-grow: 1;
+    }
+    .navbar .ms-3.d-flex.align-items-center {
+        margin-left: 0 !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    .navbar-brand img {
+        width: 25px;
+        height: 25px;
+    }
+    .navbar .d-flex.ms-auto.align-items-center > div:first-child {
+        font-size: 0.9rem;
+    }
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

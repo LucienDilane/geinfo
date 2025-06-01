@@ -10,7 +10,8 @@ from datetime import timedelta
 import os
 
 from .forms import LoginForm, ModifierPhotoProfilForm,ChangerMotDePasseForm
-from chat.models import Message
+from chat.models import Message, MessageForum
+from forum.models import Forum
 from .models import Etudiant
 
 # Create your views here.
@@ -33,14 +34,20 @@ def connexion_etudiant(request):
     return render(request, 'Etudiants/connexion.html', {'form': form})
 @login_required  # S'assurer que l'utilisateur est connecté pour voir son profil
 def profil(request):
-     current_user_etudiant = request.user  # Accéder à l'objet Etudiant lié à l'utilisateur connecté
+    current_user_etudiant = request.user  # Accéder à l'objet Etudiant lié à l'utilisateur connecté
 
+    #Gestion des forums où se trouve l'étudiant connecté
+    forums=Forum.objects.all()
+    for forum in forums:
+        if forum.membres.filter(id=current_user_etudiant.id).exists():
+            if not current_user_etudiant.forums.filter(id=forum.id).exists():
+                current_user_etudiant.forums.add(forum)#On ajoute le forum dans la liste de l'étudiant courant
      # Initialiser une liste pour stocker les étudiants contactés et leur dernier message
-     contacted_etudiants_info = {}
+    contacted_etudiants_info = {}
 
      # Messages envoyés par l'étudiant courant
-     sent_messages = Message.objects.filter(sender_id=current_user_etudiant)
-     for message in sent_messages:
+    sent_messages = Message.objects.filter(sender_id=current_user_etudiant)
+    for message in sent_messages:
          other_etudiant = message.receiver
          if other_etudiant.id != current_user_etudiant.id:  # Évite de se lister soi-même
              if other_etudiant.id not in contacted_etudiants_info or \
@@ -51,8 +58,8 @@ def profil(request):
                  }
 
      # Messages reçus par l'étudiant courant
-     received_messages = Message.objects.filter(receiver=current_user_etudiant)
-     for message in received_messages:
+    received_messages = Message.objects.filter(receiver=current_user_etudiant)
+    for message in received_messages:
          other_etudiant = message.sender
          if other_etudiant.id != current_user_etudiant.id:  # Évite de se lister soi-même
              if other_etudiant.id not in contacted_etudiants_info or \
@@ -63,20 +70,20 @@ def profil(request):
                  }
 
      # Convertir le dictionnaire en liste et trier par la date du dernier message
-     sorted_contacted_etudiants = sorted(
+    sorted_contacted_etudiants = sorted(
          contacted_etudiants_info.values(),
          key=lambda x: x['last_message_timestamp'],
          reverse=True
-     )
+    )
 
      # Récupérer les 5 dernières personnes (objets Etudiant)
-     last_5_contacts = [item['etudiant'] for item in sorted_contacted_etudiants[:5]]
+    last_5_contacts = [item['etudiant'] for item in sorted_contacted_etudiants[:5]]
 
-     context = {
+    context = {
          'etudiant': current_user_etudiant,  # C'est l'étudiant dont on affiche le profil
          'last_5_contacts': last_5_contacts,
      }
-     return render(request, 'Etudiants/profil.html', context)
+    return render(request, 'Etudiants/profil.html', context)
 
 
 def modifier_photo_profil(request):
@@ -139,3 +146,11 @@ def changer_mot_de_passe(request):
     else:
         return render(request,"Etudiants/profil.html")
 
+
+@login_required
+def contact_list(request):
+    # Si tes contacts sont les autres utilisateurs :
+    contacts = Etudiant.objects.exclude(id=request.user.id)
+    # Si tu as un modèle Contact :
+    # contacts = Contact.objects.filter(user=request.user)
+    return render(request, 'Etudiants/list_etudiants.html', {'contacts': contacts})

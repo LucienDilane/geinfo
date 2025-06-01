@@ -25,6 +25,7 @@ urlpatterns=[
     path('api/forums/create/', groupe.create_forum_api, name='create_forum_api'),
 
     # NOUVELLES URLs pour la gestion des membres de forum
+    path('allforums',groupe.allforums, name='forums'),
     #path('api/forums/<int:forum_pk>/members/', groupe.forum_members_api, name='forum_members_api'),
     #path('api/forums/<int:forum_pk>/members/<int:etudiant_pk>/remove/', groupe.forum_remove_member_api,name='forum_remove_member_api'),
 
@@ -34,6 +35,7 @@ urlpatterns=[
     path('connexion',views.connexion,name='connexion'),
     path('connect',etudiant.connexion_etudiant,name='connect'),
     path('infos',views.infos,name='propos'),
+    path('allstudents',etudiant.contact_list,name="etudiants"),
     path('profil',etudiant.profil,name="profil"),
     path('admin-register',views.register,name='register'),
     path('register',views.enregistrement_etudiant,name='register'),

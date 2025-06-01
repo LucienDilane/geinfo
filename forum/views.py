@@ -1,11 +1,26 @@
-# forum/views.py
-
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 import json
 from .models import Forum
 from Etudiants.models import Etudiant  # Assurez-vous d'importer Etudiant
+
+
+@login_required
+def allforums(request):
+    forums=Forum.objects.all()
+    return render(request,'forum/allforums.html',{'forums':forums})
+
+
+
+
+
+
+
+
+
 
 
 @csrf_exempt

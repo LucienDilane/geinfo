@@ -1,36 +1,44 @@
 {% extends 'base.html' %}
 {% block btn%} <span></span>{% endblock %}
+
+ {% block nav %}
+<li><a href="{% url 'profil'%}"><i class="fas fa-user"></i>Profil</a> </li>
+<li><a href="{% url 'forums'%}"><i class="fas fa-comments"></i>Forums</a> </li>
+<li><a href="{% url 'etudiants'%}"><i class="fa fa-envelope"></i>Discussions</a> </li>
+
+{% endblock %}
+
 {% block content %}
   <div class="container mt-5">
-    <h2 class="mb-4 text-center">Liste des Contacts</h2>
+    <h2 class="mb-4 text-center">Liste des forums existants</h2>
 
     <div class="row mb-4 justify-content-center">
       <div class="col-md-6">
         <div class="input-group">
-          <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un contact..." aria-label="Rechercher un contact">
+          <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un forum d'échange..." aria-label="Rechercher un contact">
           <button class="btn btn-primary" type="button" id="searchButton">Rechercher</button>
         </div>
       </div>
     </div>
 
-    {% if contacts %}
+    {% if forums %}
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="list-group shadow-sm" id="contactList">
-            {% for contact in contacts %}
+            {% for forum in forums %}
               <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action py-3">
                 <div>
-                  <h5 class="mb-1">{{ contact.nom }}</h5>
-                  <small class="text-muted">{{ contact.filiere }} {{ contact.niveau }}</small>
+                  <h5 class="mb-1">{{ forum.nom }}</h5>
+                  <small class="text-muted"> {{ forum.nombre_membres }} membres</small>
                 </div>
-                <a href="{% url 'chat_view' contact.id %}" class="btn btn-outline-primary btn-sm">Discuter</a>
+                <a href="{% url 'chatgroup' forum.id %}" class="btn btn-outline-primary btn-sm">Discuter</a>
               </li>
             {% endfor %}
           </div>
         </div>
       </div>
     {% else %}
-      <p class="text-center mt-4">Aucun contact disponible.</p>
+      <p class="text-center mt-4">Aucun forum disponible actuellemnt.</p>
     {% endif %}
   </div>
 
