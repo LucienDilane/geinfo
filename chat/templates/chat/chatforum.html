@@ -1,211 +1,143 @@
-{% load static %} {# N'oubliez pas cette ligne pour charger les fichiers statiques #}
+{% load static %}
+{% load my_filters%}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface de Discussion
-
-        {{ forum.nom }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Chat de Groupe - {{ forum.nom|default:"Sélectionnez un Forum" }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'chat/css/chatgroup.css' %}">
+    <style>
+             .list-group-item {
+            background-color: rgba(255, 255, 255, 0.6); /* Fond plus transparent pour les items */
+            border: none; /* Supprime les bordures des items pour un look plus doux */
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Séparateur très léger */
+            }
+            .list-group-item:last-child {
+                border-bottom: none;
+            }
+
+            .list-group-item img.profile-img { /* Style pour les images de groupe */
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 15px;
+                border: 2px solid rgba(255, 255, 255, 0.7);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+    </style>
 </head>
 <body>
 
-    <div class="d-flex flex-column vh-100 discussion-app">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom p-0 m-0">
-            <div class="container-fluid py-2 px-3">
-                <button class="btn btn-link d-lg-none toggle-sidebar-left me-2 p-0 border-0" type="button">
-                    <i class="bi bi-list fs-4"></i>
-                </button>
-
-                <a class="navbar-brand d-flex align-items-center" href="#">
-                    <img src="https://via.placeholder.com/30" alt="Nexus Logo" class="me-2 rounded-circle">
-                    <span class="fw-bold">Nexus</span>
-                </a>
-                <div class="d-flex ms-auto align-items-center">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-arrow-left me-2"></i>
-                        <span class="text-muted small">UI/UX Community</span>
-                        <span class="fw-bold mx-2">/</span>
-                        <span class="fw-bold">#{{ forum.nom }}</span>
-                    </div>
-                    <div class="ms-3 d-flex align-items-center">
-                        <i class="bi bi-star me-2 icon-button"></i>
-                        <i class="bi bi-person-plus me-2 icon-button"></i>
-                        <i class="bi bi-three-dots-vertical icon-button"></i>
-                    </div>
-                    <form class="d-flex ms-4 search-bar" role="search">
-                        <input class="form-control form-control-sm border-0 bg-light rounded-pill ps-3" type="search" placeholder="Q Find anything here" aria-label="Search">
-                    </form>
-                </div>
-                <button class="btn btn-link d-lg-none toggle-sidebar-right ms-2 p-0 border-0" type="button">
-                    <i class="bi bi-info-circle fs-4"></i>
-                </button>
+    <div class="container-fluid d-flex flex-column h-100">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand text-primary fw-bold" href="#">GINFO</a>
+                <span class="navbar-text ms-auto d-none d-md-block">
+                    Chat de Groupe - Bienvenue, <strong class="text-info">{{ user.get_full_name|default:"Invité" }}</strong>
+                </span>
             </div>
         </nav>
 
-        <div class="d-flex flex-grow-1 overflow-hidden">
+        <div class="row flex-grow-1 overflow-hidden">
 
-            <div class="left-sidebar bg-white border-end d-flex flex-column overflow-auto">
-                <div class="p-3">
-                    <h6 class="text-uppercase text-muted small mb-3">Vos Forums</h6>
-                    <ul class="list-unstyled mb-4">
-                        {% for f in all_member_forums %}
-                            <li>
-                                <a href="{% url 'detail_forum_discussion' f.id %}"
-                                   class="nav-link-custom {% if f.id == forum.id %}active{% endif %}">
-                                    <i class="bi bi-hash me-2"></i> {{ f.nom }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-
-                    <h6 class="text-uppercase text-muted small mb-3">General</h6>
-                    <ul class="list-unstyled mb-4">
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-inbox me-2"></i> Inbox <span class="badge bg-primary rounded-pill ms-auto">3</span></a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-file-earmark-text me-2"></i> Draft</a></li>
-                    </ul>
-
-                    <h6 class="text-uppercase text-muted small mb-3">Teams</h6>
-                    <ul class="list-unstyled mb-4">
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-chevron-down me-2"></i> UI/UX Teams <span class="badge bg-danger rounded-pill ms-auto">2</span></a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-plus-circle me-2"></i> Research Gang <span class="badge bg-primary rounded-pill ms-auto">5</span></a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-chat-dots me-2"></i> Talks Project <span class="badge bg-primary rounded-pill ms-auto">24</span></a></li>
-                        <li><a href="#" class="nav-link-custom create-new-team"><i class="bi bi-plus-square me-2"></i> Create New Team</a></li>
-                    </ul>
-
-                    <h6 class="text-uppercase text-muted small mb-3">Channel</h6>
-                    <ul class="list-unstyled mb-4">
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-chat-dots me-2"></i> Mobile Designer</a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-chat-dots me-2"></i> Front-End Community</a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-chat-dots me-2"></i> UI/UX Community</a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-hash me-2"></i> Thread</a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-hash me-2"></i> Job-connect</a></li>
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-hash me-2"></i> Web Designer</a></li>
-                        <li><a href="#" class="nav-link-custom create-new-channel"><i class="bi bi-plus-square me-2"></i> Make a Channel</a></li>
-                    </ul>
-                </div>
-
-                <div class="mt-auto p-3 border-top">
-                    <h6 class="text-uppercase text-muted small mb-3">Integrations</h6>
-                    <ul class="list-unstyled mb-4">
-                        <li><a href="#" class="nav-link-custom"><i class="bi bi-google me-2"></i> Google Calendar</a></li>
-                    </ul>
-                    <a href="#" class="nav-link-custom d-flex align-items-center mt-3">
-                        <img id="current-user-avatar-for-js" src="{% if etudiant_connecte.profil %}{{ etudiant_connecte.profil.url }}{% else %}https://via.placeholder.com/30/808080/FFFFFF?text=P{% endif %}" class="rounded-circle me-2" alt="{{ etudiant_connecte.prenom }} {{ etudiant_connecte.nom }}">
-                        <span id="current-user-name-for-js">{{ etudiant_connecte.prenom }} {{ etudiant_connecte.nom }}</span>
-                        <i class="bi bi-three-dots-vertical ms-auto"></i>
-                    </a>
-                </div>
+            <div class="col-md-3 col-lg-2 bg-light border-end p-3 d-flex flex-column" id="forum-list-col">
+                <h5 class="mb-3 text-primary">Vos Forums</h5>
+                <ul class="list-group list-group-flush flex-grow-1 overflow-auto">
+                    {% for f in user_forums %}
+                        <a href="{% url 'chat_room' f.id %}" class="list-group-item list-group-item-action {% if forum and f.id == forum.id %}active{% endif %}">
+                            {{ f.nom }} <span class="badge bg-primary rounded-pill ms-auto">{{ f.nombre_membres }}</span>
+                        </a>
+                    {% empty %}
+                        <li class="list-group-item text-muted">Aucun forum rejoint.</li>
+                    {% endfor %}
+                </ul>
             </div>
 
-            <main class="main-content flex-grow-1 d-flex flex-column bg-light overflow-auto">
-                <div class="messages-container flex-grow-1 overflow-auto p-4" id="messages-container">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="message-bubble {% if message.auteur == etudiant_connecte %}current-user{% else %}other-user{% endif %}">
-                                <div class="avatar-container">
-                                    <img src="{% if message.auteur.profil %}{{ message.auteur.profil.url }}{% else %}https://via.placeholder.com/40{% endif %}" alt="{{ message.auteur.prenom }} {{ message.auteur.nom }}">
-                                </div>
-                                <div class="message-content">
-                                    <div class="message-sender-info">
-                                        {{ message.auteur.prenom }} {{ message.auteur.nom }}
-                                    </div>
-                                    <div class="message-text">
-                                        {{ message.contenu }}
-                                    </div>
-                                    <div class="message-time">
-                                        {{ message.date_envoi|date:"H:i, d M Y" }}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-center text-muted">Aucun message dans ce forum pour l'instant. Soyez le premier à parler !</p>
-                    {% endif %}
-                </div>
-
-                <div class="message-input-area p-3 bg-white border-top">
-                    <form id="message-form">
-                        {% csrf_token %}
-                        <div class="input-group">
-                            <textarea name="contenu_message" id="message-input" class="form-control" placeholder="Écrivez votre message ici..." rows="1"></textarea>
-                            <span class="input-group-text bg-white border-0">
-                                <i class="bi bi-emoji-smile icon-button me-2"></i>
-                                <i class="bi bi-paperclip icon-button me-2"></i>
-                                <i class="bi bi-mic icon-button"></i>
-                            </span>
-                        </div>
-                        <button type="submit" class="btn btn-primary ms-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%;">
-                            <i class="bi bi-arrow-up text-white"></i>
-                        </button>
-                    </form>
-                </div>
-            </main>
-
-            <div class="right-sidebar bg-white border-start d-flex flex-column overflow-auto">
-                <div class="p-3">
-                    <h5 class="fw-bold">{{ forum.nom }}</h5>
-                    <p class="text-muted small">
-                        Créateur: <strong>{% if forum.createur %}{{ forum.createur.prenom }} {{ forum.createur.nom }}{% else %}Inconnu{% endif %}</strong><br>
-                        Description: {{ forum.description }}
-                    </p>
-                    <hr>
-
-                    <ul class="list-unstyled">
-                        <li class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="text-muted small"><i class="bi bi-star me-2"></i> Your star messages</span>
-                            <span class="fw-bold">0</span>
-                        </li>
-                        <li class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="text-muted small"><i class="bi bi-file-earmark-fill me-2"></i> Docs, files, media</span>
-                            <span class="fw-bold">86 <i class="bi bi-chevron-right ms-1"></i></span>
-                        </li>
-                        <li class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="text-bold">1 <i class="bi bi-chevron-right ms-1"></i></span>
-                        </li>
-                    </ul>
-                    <hr>
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="text-uppercase text-muted small mb-0">Membres <span class="fw-bold text-dark">{{ forum.nombre_membres }}</span></h6>
-                        <i class="bi bi-three-dots icon-button"></i>
+            <div class="col-md-6 col-lg-7 d-flex flex-column chat-container">
+                {% if forum %}
+                    <div class="chat-header bg-primary text-white p-3 d-flex align-items-center justify-content-between rounded-top shadow-sm">
+                        <h4 class="mb-0">{{ forum.nom }}</h4>
+                        <span class="badge bg-light text-primary rounded-pill">{{ forum.nombre_membres }} membres</span>
                     </div>
-                    <ul class="list-unstyled member-list">
+
+                    <div class="chat-messages flex-grow-1 overflow-auto p-3" data-forum-id="{{ forum.id }}">
+                        {% for message in messages %}
+                            <div class="message {% if message.auteur.id == current_user_id %}sent text-end{% else %}received{% endif %} mb-2" data-message-id="{{ message.id }}">
+                                <span class="sender-name"><small>{% if message.auteur.id == current_user_id %}Vous{% else %}{{ message.auteur.nom|first_word_capitalized }}{% endif %}</small></span>
+                                <p class="message-content">{{ message.contenu }}</p>
+                                <small class="message-time">{{ message.date_envoi|date:"H:i" }}</small>
+                            </div>
+                        {% empty %}
+                            <p class="text-center text-muted">Aucun message pour l'instant. Soyez le premier à parler !</p>
+                        {% endfor %}
+                    </div>
+                        {% if forum %}
+                    <div class="chat-input p-3 bg-light border-top rounded-bottom">
+                        <form action="{% url 'chat_room' forum.id %}" method="post">
+                            {% endif %}
+                            {% csrf_token %}
+                        <div class="input-group">
+                            <input type="textarea" id="messageInput" class="form-control" placeholder="Écrivez votre message..." name="message" required>
+                            <input type="submit" class="btn btn-primary" id="sendMessageBtn" value="Envoyer">
+                        </div></form>
+                    </div>
+                {% else %}
+                    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                        <h3 class="text-muted">Bienvenue dans le chat !</h3>
+                        <p class="text-muted">Veuillez sélectionner un forum à gauche pour commencer à discuter.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-3 col-lg-3 bg-light border-start p-3 d-flex flex-column" id="forum-info-col">
+                {% if forum %}
+                    <h5 class="mb-3 text-primary">Détails du Forum</h5>
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-success">{{ forum.nom }}</h6>
+                            <p class="card-text text-muted small">{{ forum.description }}</p>
+                            <hr>
+                            <p class="card-text">
+                                <i class="bi bi-people-fill me-2"></i>
+                                <span class="fw-bold">{{ forum.nombre_membres }}</span> membres
+                            </p>
+                            <p class="card-text">
+                                <i class="bi bi-person-fill me-2"></i>
+                                Créateur: {{ forum.createur.get_full_name|default:"N/A" }}
+                            </p>
+                            {# Vous pourriez ajouter ici l'avatar du forum ou d'autres infos #}
+                        </div>
+                    </div>
+                    <h6 class="mt-4 mb-2 text-primary">Membres du Forum</h6>
+                    <ul class="list-group list-group-flush overflow-auto flex-grow-1">
                         {% for membre in forum.membres.all %}
-                            <li class="d-flex align-items-center justify-content-between mb-2">
-                                <div class="d-flex align-items-center">
-                                    <img src="{% if membre.profil %}{{ membre.profil.url }}{% else %}https://via.placeholder.com/30{% endif %}" class="rounded-circle me-2" alt="{{ membre.prenom }} {{ membre.prenom }}">
-                                    <span>{{ membre.prenom }} {{ membre.nom }}</span>
-                                    {% if membre == forum.createur %}
-                                        <span class="badge bg-info-subtle text-info ms-2">Créateur</span>
-                                    {% elif membre.is_admin %}
-                                        <span class="badge bg-secondary-subtle text-secondary ms-2">Admin</span>
-                                    {% endif %}
-                                </div>
-                                <div class="member-actions">
-                                    <i class="bi bi-chat-dots me-2 icon-button"></i>
-                                    <i class="bi bi-telephone icon-button"></i>
-                                </div>
+                            <li class="list-group-item d-flex align-items-center">
+                                <img src="{% static 'geinfo/img/profils/'%}{{membre.profil}}" alt="Avatar" class="profile-img">
+                                {{ membre.get_full_name }}
+                                {% if membre.id == user.id %}
+                                    <span class="badge bg-secondary ms-auto">Vous</span>
+                                {% endif %}
                             </li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">Aucun membre.</li>
                         {% endfor %}
                     </ul>
-                </div>
+                {% else %}
+                    <div class="text-center text-muted">
+                        <p class="mt-5">Sélectionnez un forum pour voir ses informations.</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <script>
-        const CURRENT_USER_PROFILE_URL = "{% if etudiant_connecte.profil %}{{ etudiant_connecte.profil.url }}{% else %}https://via.placeholder.com/40{% endif %}";
-        const CURRENT_USER_NAME = "{{ etudiant_connecte.prenom }} {{ etudiant_connecte.nom }}";
-        // Si vous activez l'AJAX plus tard, vous aurez besoin de CSRF_TOKEN
-        // const CSRF_TOKEN = "{{ csrf_token }}";
-    </script>
-
-    <script src="{% static 'chat/chatgroup.js' %}"></script>
-</body>
 </html>

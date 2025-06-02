@@ -18,16 +18,10 @@ urlpatterns=[
     path('api/etudiants/<int:id>/', views.etudiant_detail_api, name='etudiant_detail_api'),
     path('api/etudiants/<int:id>/', views.etudiant_detail_update_delete_api, name='etudiant_detail_update_delete_api'),
 
-    ##Forums
-    # URLs pour les forums (maintenant dans forum/views.py)
-    path('api/forums/', groupe.forums_list_api, name='forums_list_api'),
-    path('api/forums/<int:pk>/', groupe.forum_detail_update_delete_api, name='forum_detail_update_delete_api'),
-    path('api/forums/create/', groupe.create_forum_api, name='create_forum_api'),
 
-    # NOUVELLES URLs pour la gestion des membres de forum
+    # Forum
     path('allforums',groupe.allforums, name='forums'),
-    #path('api/forums/<int:forum_pk>/members/', groupe.forum_members_api, name='forum_members_api'),
-    #path('api/forums/<int:forum_pk>/members/<int:etudiant_pk>/remove/', groupe.forum_remove_member_api,name='forum_remove_member_api'),
+    
 
     ## Liens Etudiants
 

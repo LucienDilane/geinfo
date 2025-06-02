@@ -10,34 +10,6 @@ from forum.models import Forum
 from .models import Message, MessageForum
 # Create your views here.
 
-@login_required
-def chatgroup(request,forum_id):
-    forum=get_object_or_404(Forum, id=forum_id)
-    current_etudiant=request.user
-
-    if request.method=='POST':
-        contenu=request.POST.get("message")
-
-        if contenu and contenu.strip():
-            MessageForum.objects.create(
-                forum=forum,
-                auteur=current_etudiant,
-                contenu=contenu
-            )
-            return redirect("chatgroup", forum_id=forum.id)
-        else:
-            pass
-
-    messages = forum.messages.all()
-    forums=current_etudiant.forums.all()
-    context={
-        "forum":forum,
-        "forums":forums,
-        "messages":messages,
-        "etudiant":current_etudiant
-    }
-    return render(request,"chat/chatforum.html",context)
-
 
 @login_required
 def chat_view(request, receiver_id):
@@ -76,6 +48,7 @@ def chat_view(request, receiver_id):
         'messages': messages,
     }
     return render(request, 'chat/chat.html', context)
+
 def chat(request,receiver_id):
     if request.method=='POST':
         content=request.POST.get("message")

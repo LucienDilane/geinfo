@@ -26,4 +26,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('geinfo/',include('geinfo.urls')),
     path('chat/',include('chat.urls')),
+    path('forum/',include('forum.urls')),
 ]
