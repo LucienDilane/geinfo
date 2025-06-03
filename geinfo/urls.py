@@ -5,6 +5,7 @@ from . import views
 import Etudiants.views as etudiant
 import adminginfo.views as ginfo
 import forum.views as groupe
+import ressources.views as res
 
 urlpatterns=[
     ## Liens Admin
@@ -28,7 +29,6 @@ urlpatterns=[
     path('',views.accueil,name="accueil"),
     path('connexion',views.connexion,name='connexion'),
     path('connect',etudiant.connexion_etudiant,name='connect'),
-    path('infos',views.infos,name='propos'),
     path('allstudents',etudiant.contact_list,name="etudiants"),
     path('profil',etudiant.profil,name="profil"),
     path('admin-register',views.register,name='register'),
@@ -36,6 +36,9 @@ urlpatterns=[
     path('logout/', auth_views.LogoutView.as_view(next_page='connexion'), name='logout'),
     path('changerphoto',etudiant.modifier_photo_profil,name='changerphoto'),
     path('changepassword',etudiant.changer_mot_de_passe,name='changepassword'),
+
+    ##Ressources
+    path('ressources',res.ressources,name="ressources")
 
     #path('admin', auth_views.LoginView.as_view(template_name='geinfo/login.html'), name='admin'),
     #path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'), # Redirige vers la racine après la déconnexion

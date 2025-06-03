@@ -154,3 +154,4 @@ def contact_list(request):
     # Si tu as un modèle Contact :
     # contacts = Contact.objects.filter(user=request.user)
     return render(request, 'Etudiants/list_etudiants.html', {'contacts': contacts})
+

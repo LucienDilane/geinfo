@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.templatetags.static import static
-
+from django.contrib.auth.decorators import login_required
 import json
 
 from Etudiants.models import Etudiant
@@ -39,6 +39,8 @@ def admin(request):
 
 def administration(request):
     return render(request,"adminginfo/dashboard.html")
+
+
 
 def etudiants_list_api(request):
     etudiants = Etudiant.objects.all().values('matricule', 'nom', 'prenom', 'filiere', 'annee', 'profil', 'niveau')

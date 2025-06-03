@@ -1,0 +1,369 @@
+{% load static %}
+{# Pas besoin de {% load dict_filters %} ici, car la structure de données a été simplifiée dans la vue #}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GINFO - Partage</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e9ecef; /* Un gris plus doux pour le fond */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 30px; /* Plus d'espace en haut */
+            padding-bottom: 30px;
+        }
+        .container-fluid { /* Utilise container-fluid pour une largeur maximale */
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .card {
+            border: none;
+            border-radius: 12px; /* Coins plus arrondis */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée */
+            margin-bottom: 30px;
+            overflow: hidden; /* S'assure que le contenu respecte les coins arrondis */
+        }
+        .card-header {
+            background: linear-gradient(45deg, #007bff, #0056b3); /* Dégradé de bleu */
+            color: white;
+            text-align: center;
+            font-size: 1.8rem; /* Plus grande taille de police */
+            font-weight: 600; /* Plus gras */
+            border-bottom: none; /* Supprime la bordure par défaut de Bootstrap */
+            padding: 20px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-header i { /* Style pour l'icône dans le header */
+            margin-right: 10px;
+        }
+        .card-body {
+            padding: 25px;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 8px;
+        }
+        .form-control, .form-control-file {
+            border-radius: 8px; /* Coins arrondis pour les inputs */
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .form-control:focus, .form-control-file:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .btn-primary {
+            background-color: #28a745; /* Bouton vert pour l'action principale */
+            border-color: #28a745;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            transform: translateY(-2px); /* Petit effet de soulèvement */
+        }
+
+        /* Styles pour la section des ressources partagées */
+        .resource-list h2 {
+            font-size: 2rem;
+            color: #343a40;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+        }
+        .category-header {
+            cursor: pointer;
+            background-color: #f0f8ff; /* Bleu très clair */
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-size: 1.35rem;
+            font-weight: bold;
+            color: #212529;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* Ombre légère pour chaque catégorie */
+            transition: all 0.3s ease;
+        }
+        .category-header:hover {
+            background-color: #e0f0ff;
+            transform: translateY(-3px); /* Effet de soulèvement au survol */
+        }
+        .category-header .file-icon {
+            margin-right: 18px;
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); /* Petite ombre pour l'icône */
+        }
+        .category-header span { /* Pour le nombre de ressources */
+            margin-left: auto; /* Pousse le nombre à droite */
+            background-color: #007bff;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .list-group {
+            margin-bottom: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #dee2e6; /* Bordure légère autour du groupe */
+        }
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-left: 6px solid transparent; /* Bordure plus épaisse pour le survol */
+            transition: border-left 0.3s ease, background-color 0.3s ease;
+            background-color: white;
+            border-bottom: 1px solid #f8f9fa; /* Bordure très fine entre les éléments */
+        }
+        .list-group-item:last-child {
+            border-bottom: none; /* Pas de bordure pour le dernier élément */
+        }
+        .list-group-item:hover {
+            border-left: 6px solid #007bff; /* Bleu éclatant au survol */
+            background-color: #fefefe; /* Très léger changement de fond */
+        }
+        .file-icon-item { /* Icônes des fichiers individuels */
+            width: 25px;
+            height: 25px;
+            margin-right: 12px;
+            object-fit: contain;
+        }
+        .resource-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            font-size: 1.05rem;
+        }
+        .resource-info a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .resource-info a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        .resource-meta {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-left: 20px;
+            white-space: nowrap;
+            text-align: right;
+        }
+        .text-danger {
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        /* Ajustements pour les petits écrans */
+        @media (max-width: 767.98px) {
+            .card-header {
+                font-size: 1.5rem;
+            }
+            .category-header {
+                font-size: 1.15rem;
+                padding: 15px;
+            }
+            .resource-meta {
+                margin-top: 5px;
+                margin-left: 0;
+                text-align: left;
+                font-size: 0.75em;
+            }
+            .list-group-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .resource-info {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-cloud-upload-alt"></i> Partager une Ressource
+                </div>
+                <div class="card-body">
+                    <form id="uploadForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %} 
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="id_titre">Titre de la ressource (optionnel)</label>
+                            {{ form.titre }}
+                            {% if form.titre.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.titre.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.categorie_sugeree.label_tag }}
+                            {{ form.categorie_sugeree }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_fichier">Télécharger un fichier</label>
+                            {{ form.fichier }}
+                            {% if form.fichier.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.fichier.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-share-alt"></i> Partager la Ressource
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-6 mb-4">
+            <div class="resource-list">
+                <h2><i class="fas fa-file-alt"></i> Ressources Partagées</h2>
+                {% for category_data in categories_data %}
+                    {% if category_data.resources %}
+                        <div class="category">
+                            <div class="category-header" data-toggle="collapse" data-target="#{{ category_data.name|slugify }}List" aria-expanded="true" aria-controls="{{ category_data.name|slugify }}List">
+                                {# Utilise une icône plus spécifique si tu en as, sinon celle du dossier #}
+                                {% if category_data.name == 'Documents PDF' %}
+                                    <img src="https://img.icons8.com/ios-filled/50/007bff/pdf.png" alt="PDF" class="file-icon">
+                                {% elif category_data.name == 'Images' %}
+                                    <img src="https://img.icons8.com/ios-filled/50/007bff/image.png" alt="Image" class="file-icon">
+                                {% elif category_data.name == 'Documents Word' %}
+                                    <img src="{% static 'geinfo/img/word.jpeg' %}" alt="Word" class="file-icon">
+                                {% elif category_data.name == 'Présentations' %}
+                                    <img src="https://img.icons8.com/ios-filled/50/007bff/powerpoint.png" alt="PPT" class="file-icon">
+                                {% elif category_data.name == 'Archives' %}
+                                    <img src="https://img.icons8.com/ios-filled/50/007bff/zip.png" alt="Archives" class="file-icon">
+                                {% elif category_data.name == 'Tableurs' %}
+                                    <img src="https://img.icons8.com/ios-filled/50/007bff/excel.png" alt="Tableurs" class="file-icon">
+                                {% elif category_data.name == 'Textes' %}
+                                    <img src="https://img.icons8.com/ios-filled/50/007bff/txt.png" alt="Textes" class="file-icon">
+                                {% else %} {# Fallback pour "Autres" ou toute autre catégorie non mappée #}
+                                    <img src="https://img.icons8.com/ios-filled/50/007bff/folder--v1.png" alt="Catégorie" class="file-icon"> 
+                                {% endif %}
+                                {{ category_data.name }} <span>{{ category_data.resources|length }}</span>
+                            </div>
+                            <ul class="collapse list-group show" id="{{ category_data.name|slugify }}List">
+                                {% for resource in category_data.resources %}
+                                    <li class="list-group-item">
+                                        <div class="resource-info">
+                                            {# Icône dynamique basée sur l'extension du fichier #}
+                                            {% if resource.get_file_extension == 'pdf' %}
+                                                <img src="https://img.icons8.com/ios-filled/50/007bff/pdf.png" alt="PDF" class="file-icon-item">
+                                            {% elif resource.get_file_extension == 'doc' or resource.get_file_extension == 'docx' %}
+                                                <img src="{% static 'geinfo/img/word.jpeg' %}" alt="Word" class="file-icon-item"> 
+                                            {% elif resource.get_file_extension == 'ppt' or resource.get_file_extension == 'pptx' %}
+                                                <img src="https://img.icons8.com/ios-filled/50/007bff/powerpoint.png" alt="PowerPoint" class="file-icon-item">
+                                            {% elif resource.get_file_extension == 'jpg' or resource.get_file_extension == 'jpeg' or resource.get_file_extension == 'png' or resource.get_file_extension == 'gif' %}
+                                                <img src="https://img.icons8.com/ios-filled/50/007bff/image.png" alt="Image" class="file-icon-item">
+                                            {% else %}
+                                                <img src="https://img.icons8.com/ios-filled/50/007bff/document.png" alt="Fichier" class="file-icon-item"> 
+                                            {% endif %}
+                                            <a href="{{ resource.fichier.url }}" target="_blank">{{ resource.titre|default:resource.fichier.name }}</a>
+                                        </div>
+                                        <div class="resource-meta">
+                                            Partagé par: <strong>{{ resource.auteur.prenom }}</strong> le {{ resource.date_creation|date:"d M Y H:i" }}
+                                        </div>
+                                    </li>
+                                {% empty %}
+                                    <li class="list-group-item text-muted">Aucune ressource dans cette catégorie pour le moment.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('id_fichier'); 
+        const categorySuggestedInput = document.getElementById('id_categorie_sugeree');
+
+        const categoryMap = {
+            'pdf': 'Documents PDF',
+            'doc': 'Documents Word',
+            'docx': 'Documents Word',
+            'ppt': 'Présentations',
+            'pptx': 'Présentations',
+            'jpg': 'Images',
+            'jpeg': 'Images',
+            'png': 'Images',
+            'gif': 'Images',
+            'txt': 'Textes',
+            'csv': 'Tableurs',
+            'xlsx': 'Tableurs',
+            'zip': 'Archives',
+            'rar': 'Archives'
+        };
+
+        fileInput.addEventListener('change', function() {
+            const file = fileInput.files[0];
+            if (file) {
+                const fileName = file.name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+                let suggestedCategoryName = "Autres"; 
+
+                if (categoryMap[fileExtension]) {
+                    suggestedCategoryName = categoryMap[fileExtension];
+                }
+                
+                categorySuggestedInput.value = suggestedCategoryName;
+                console.log(`Fichier: ${fileName}, Extension: ${fileExtension}, Catégorie suggérée: ${suggestedCategoryName}`);
+            } else {
+                categorySuggestedInput.value = "";
+            }
+        });
+
+        fileInput.dispatchEvent(new Event('change'));
+    });
+</script>
+
+</body>
+</html>

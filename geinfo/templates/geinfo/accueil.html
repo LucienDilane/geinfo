@@ -1,180 +1,94 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum Blur</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        body {
-            background: #f4f4f4;
-        }
-        .hero {
-            /* La ligne background-image était commentée, et background: aqua; la surchargerait. */
-            /* Si vous voulez une image, décommentez la ligne ci-dessous et assurez-vous que le chemin du fichier statique est correct. */
-            /* background-image: url("{% static 'geinfo/img/logo.jpg'%}"); */
-            background-repeat: no-repeat;
-            background-position: center;
-            background-color: aqua; /* Utiliser background-color pour plus de clarté */
-            color: white;
-            padding: 100px 20px;
-            text-align: center;
-        }
-        .premium-banner {
-            background-color: #f8c74d;
-            padding: 15px;
-            text-align: center;
-            border-radius: 5px;
-            margin-bottom: 20px; /* Ajout d'un espace sous la bannière */
-        }
-        .category-card {
-            margin-bottom: 20px;
-        }
-         .category-card .card-title {
-            color: white; /* S'assurer que le titre est lisible sur le fond primaire */
-            padding: 10px; /* Ajouter un peu de padding au titre */
-         }
-    </style>
-</head>
-<body>
+<div class="container" data-aos="fade-up" data-aos-delay="100">
 
-<header class="hero">
-
-
-    {% extends "base.html" %}
-{% load static %}
-
-
-
-{% block title %}Accueil{% endblock title %}
-{% block rel %}{% static 'Etudiants/css/connexion.css' %}{% endblock rel %}
-
-{% block content %}
-<div class="scroll-down">SCROLL DOWN
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <path d="M16 3C8.832031 3 3 8.832031 3 16s5.832031 13 13 13 13-5.832031 13-13S23.167969 3 16 3zm0 2c6.085938 0 11 4.914063 11 11 0 6.085938-4.914062 11-11 11-6.085937 0-11-4.914062-11-11C5 9.914063 9.914063 5 16 5zm-1 4v10.28125l-4-4-1.40625 1.4375L16 23.125l6.40625-6.40625L21 15.28125l-4 4V9z"/>
-</svg></div>
-<div class="container"></div>
-<div class="modal">
-  <div class="modal-container">
-    <div class="modal-left">
-      <h1 class="modal-title">Welcome!</h1>
-      <p class="modal-desc">Fanny pack hexagon food truck, street art waistcoat kitsch.</p>
-        <form>
-             {% csrf_token %}
-
-             {% if form.errors %}
-                <div class="error-container">
-                    <p class="error-message">Veuillez corriger les erreurs ci-dessous :</p>
-                    {{ form.non_field_errors }}
-                    {% for field in form %}
-                       <p style="color:red;">{{ field.errors }}</p>
-                    {% endfor %}
-                </div>
-             {% endif %}
-                <div class="input-block">
-                    <label for="identifiant" class="input-label">Email</label>
-                    <input type="text" name="identifiant" id="identifiant" placeholder="Entrez votre matricule">
-
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+              <div class="company-badge mb-4">
+                <i class="bi bi-gear-fill me-2"></i>
+                Working for your success
               </div>
-              <div class="input-block">
-                    <label for="motdepasse" class="input-label">Password</label>
-                    <input type="password" name="motdepasse" id="motdepasse" placeholder="Password">
+
+              <h1 class="mb-4">
+               BIENVENUE Sur <br>
+                La Plateforme<br>
+                <span class="accent-text">GINFO</span>
+              </h1>
+
+              <p class="mb-4 mb-md-5">
+                La plateforme d'echange enre nouveaux et anciens etudiants du departemntdu Genie Informaique de l'ENSET de Douala
+              </p>
+
+              <div class="hero-buttons">
+                <a href="{% url 'connexion' %}" class="btn btn-primary me-0 me-sm-2 mx-1">Se connecter</a>
               </div>
-              <div class="modal-buttons">
-                <a href="" class="">Forgot your password?</a>
-                <button type="submit" class="input-button">Login</button>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
+              <img src="{% static 'geinfo/img/img/illustration-1.webp' %}" alt="Hero Image" class="img-fluid">
+
+              <div class="customers-badge">
+                <div class="customer-avatars">
+                  <img src="{% static 'geinfo/img/img/avatar-1.jpg' %}" alt="Customer 1" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-2.jpg' %}" alt="Customer 2" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-3.jpg' %}" alt="Customer 3" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-4.jpg' %}" alt="Customer 4" class="avatar">
+                  <img src="{% static 'geinfo/img/img/avatar-5.jpg' %}" alt="Customer 5" class="avatar">
+                  <span class="avatar more">5+</span>
+                </div>
+                <p class="mb-0 mt-2">Echangez avec plus de 500 etudians </p>
               </div>
-        </form>
-
-    </div>
-    <div class="modal-right">
-      <img src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=dfd2ec5a01006fd8c4d7592a381d3776&auto=format&fit=crop&w=1000&q=80" alt="">
-    </div>
-    <button class="icon-button close-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <path d="M 25 3 C 12.86158 3 3 12.86158 3 25 C 3 37.13842 12.86158 47 25 47 C 37.13842 47 47 37.13842 47 25 C 47 12.86158 37.13842 3 25 3 z M 25 5 C 36.05754 5 45 13.94246 45 25 C 45 36.05754 36.05754 45 25 45 C 13.94246 45 5 36.05754 5 25 C 5 13.94246 13.94246 5 25 5 z M 16.990234 15.990234 A 1.0001 1.0001 0 0 0 16.292969 17.707031 L 23.585938 25 L 16.292969 32.292969 A 1.0001 1.0001 0 1 0 17.707031 33.707031 L 25 26.414062 L 32.292969 33.707031 A 1.0001 1.0001 0 1 0 33.707031 32.292969 L 26.414062 25 L 33.707031 17.707031 A 1.0001 1.0001 0 0 0 32.980469 15.990234 A 1.0001 1.0001 0 0 0 32.292969 16.292969 L 25 23.585938 L 17.707031 16.292969 A 1.0001 1.0001 0 0 0 16.990234 15.990234 z"></path>
-</svg>
-      </button>
-  </div>
-  <button class="modal-button">Click here to login</button>
-</div>
-
-<script src="{% static 'Etudiants/js/connexion.js' %}"></script>
-{% endblock content %}
-{% block link%} {%url 'propos' %} {% endblock link %}
-{% block text %} A Propos {% endblock text %}
-
-
-
-
-
-
-
-
-
-
-
-
-    <h1>GINFO</h1>
-    <p>Plateforme d'échange entre anciens et nouveaux etudiants</p>
-    <div>
-        <a class="btn btn-warning btn-lg" href="{% url 'connexion' %}"><i class="fas fa-sign-in-alt"></i> Connexion</a>
-    </div>
-</header>
-
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="category-card card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">GINFO - Nouvelles</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">Les dernières nouvelles et informations sur le forum.</p>
-                    <a href="{% url 'propos' %}" class="btn btn-primary">Voir</a>
-                </div>
             </div>
-            <h2>Discussions</h2>
-
-            <div class="category-card card">
-                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Discussion Générale</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">Discussion sur GINFO. Traite de tous les sujets avec tout le monde.</p>
-                    <a href="#" class="btn btn-primary">Voir</a>
-                </div>
-            </div>
-            <div class="category-card card">
-                 <div class="card-header bg-primary text-white">
-                     <h5 class="mb-0">Mode Solo</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">Discussion sur le mode solo de Blur.</p>
-                    <a href="#" class="btn btn-primary">Voir</a>
-                </div>
-            </div>
+          </div>
         </div>
-        <div class="col-md-4">
-            <div class="premium-banner">
-                <h5>PREMIUM</h5>
-                <p>Devenez membre Premium du forum et profitez d'incroyables avantages !</p>
-                <p><strong>3,99€ / mois</strong></p>
-                <a href="#" class="btn btn-dark">Devenir Premium</a>
-            </div>
-            <div class="mt-4">
-                <h5>Qui est en ligne ?</h5>
-                <p>2 invités</p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js" integrity="sha384-K9/ruXcNOk1RfC0+c5BUk6RVadF+w5Zp1f4c5dF5l9q5e5f5r5z5u5t5w5d5n5p5c5ja5a5b5c5d5e5f5g5h5i5j5k5l5m5n5o5p5q5r5s5t5u5v5w5x5y5z2" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4Ag8PEjQ+lRFA9/KBYL6P3j3Q9gVCbvhz2v2J2P2g2d2i2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z2" crossorigin="anonymous"></script>
-</body>
-</html>
+        <div class="row stats-row gy-4 mt-5" data-aos="fade-up" data-aos-delay="500">
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-people"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Echange en groupe</h4>
+                <p class="mb-0">Possibilie de creer son forum</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-megaphone"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Nouveautes</h4>
+                <p class="mb-0">Suivre l'actualie du departement</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-graph-up"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Suivie</h4>
+                <p class="mb-0">Vous avez la possibilite d'etre suivi par les aines</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="bi bi-envelope"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Messagerie privee</h4>
+                <p class="mb-0">Echangez en privee avec un autre etudiant sur la plateforme</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>

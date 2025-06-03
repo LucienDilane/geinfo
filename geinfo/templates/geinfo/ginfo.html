@@ -1,10 +1,103 @@
-{% extends "base.html" %}
+{% load static %}
+<div class="container" data-aos="fade-up" data-aos-delay="100">
 
-{% block title %}A propos{% endblock title %}
+        <div class="row gy-4 align-items-center justify-content-between">
 
-{% block content %}
-<p>BIENVENUE AU DEPARTEMENT GINFO</p>
-{% endblock content %}
-{% block link%} {%url 'accueil' %} {% endblock link %}
-{% block text %} Accueil {% endblock text %}
+          <div class="col-xl-5" data-aos="fade-up" data-aos-delay="200">
+            <span class="about-meta">A propos de la plateforme</span>
+            <h2 class="about-title">La Plateforme d'Echange entre anciens et nouveaux eudiants</h2>
+            <p class="about-description">La plateforme d'echange est un reseau qui regroupe des anciens et nouveaux etudiants du departement
+            du Genie Informaique de l'ENSET de Douala. Elle est concue pour faciliter la communication
+            et le partage d'experiences entre les etudiants de differentes generations<br>
+            Cette plateforme vise donc a: </p>
 
+            <div class="row feature-list-wrapper">
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Faciliter la mise en reseau entre les anciens et les nouveaux etudiants</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Partager les connaissances et les experiences</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Offrir les conseils et les orientations pour les nouveaux etudiants</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Creer une communaute solidaire et dynamique</li>
+                </ul>
+              </div>
+            </div>
+
+            <p class="about-description">Les fonctionalites proposees sont les suivantes: </p>
+             <div class="row feature-list-wrapper">
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Un forum de discussion pour partager les experiences et les idees</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Un systeme de messagerie privee pour communiquer avec les aures membres</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Un espace de partage des ressources pour acceder a des documents et des informations
+                  utiles</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Differents autres fora pour echanger des idees sur un sujet precis</li>
+                </ul>
+              </div>
+            </div>
+
+            <p class="about-description">Les avantages a etre sur la plateforme: </p>
+             <div class="row feature-list-wrapper">
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Rencontrer des personnes partageant les memes interets et objectifs</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Beneficier des conseils et l'experience des anciens etudiants</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Developper ses connaissances et ses competences</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Etre partie d'une communaute dynamique et solidaire</li>
+                </ul>
+              </div>
+            </div>
+             <p class="about-description">Nous souhaitons a tous la bienvenue, et esperons que l'aventure sera belle</p>
+
+            <div class="info-wrapper">
+              <div class="row gy-4">
+                <div class="col-lg-5">
+                  <div class="profile d-flex align-items-center gap-3">
+                    <img src="{% static 'geinfo/img/me.jpg' %}" alt="CEO Profile" class="profile-image">
+                    <div>
+                      <h4 class="profile-name">DAMA Lucien</h4>
+                      <p class="profile-position">GINFO; II3</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-5">
+                  <div class="profile d-flex align-items-center gap-3">
+                    <img src="{% static 'geinfo/img/lynne.jpg' %}" alt="CEO Profile" class="profile-image">
+                    <div>
+                      <h4 class="profile-name">BASSA Lynne</h4>
+                      <p class="profile-position">GINFO; II3</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="col-xl-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="image-wrapper">
+              <div class="images position-relative" data-aos="zoom-out" data-aos-delay="400">
+                <img src="{% static 'geinfo/img/et2.jpg' %}" alt="Business Meeting" class="img-fluid main-image rounded-4">
+                <img src="{% static 'geinfo/img/et1.jpg' %}" alt="Team Discussion" class="img-fluid small-image rounded-4">
+              </div>
+              <div class="experience-badge floating">
+                <h3>GINFO <span></span></h3>
+                <p>Plus que des camarades,<br> Nous sommes des partenaires</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
